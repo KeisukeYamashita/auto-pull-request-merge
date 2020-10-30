@@ -29,5 +29,7 @@ export default class Retry {
         await this.wait()
       }
     }
+
+    throw new Error('timeout')
   }
 }
