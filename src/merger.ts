@@ -43,6 +43,7 @@ export class Merger {
           }
         } catch (err) {
           core.debug(`failed retry count:${count} with error ${inspect(err)}`)
+          throw err
         }
       }
     )
