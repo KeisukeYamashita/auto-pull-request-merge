@@ -2,10 +2,22 @@ name: 'Your name here'
 description: 'Provide a description here'
 author: 'Your name or organization here'
 inputs:
-  milliseconds: # change this
-    required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  repository:
+    required: false
+    description: 'The GitHub repository containing the issue or pr.'
+    default: ${{ github.repository }}
+  pullRequestNumber:
+    required: false
+    description: 'Number of the pull request'
+    default: ${{ github.event.pull_request.number }}
+  timeoutSeconds:
+    required: false
+    description: 'Seconds to timeout'
+    default: '60'
+  token:
+    required: false
+    description: 'Credential to access to the repo to post the comment'
+    default: ${{ github.token }}
 runs:
   using: 'node12'
   main: 'dist/index.js'
