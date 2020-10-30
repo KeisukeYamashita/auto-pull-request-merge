@@ -4856,8 +4856,12 @@ class Merger {
                 catch (err) {
                     core.debug(`failed retry count:${count} with error ${util_1.inspect(err)}`);
                 }
-                return;
             }));
+            yield client.pulls.merge({
+                owner,
+                repo,
+                pull_number: this.cfg.pullRequestNumber
+            });
         });
     }
 }

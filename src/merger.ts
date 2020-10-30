@@ -1,5 +1,4 @@
 import * as github from '@actions/github'
-import {ReposListCommitStatusesForRefResponseData} from '@octokit/types'
 import * as core from '@actions/core'
 import Retry from './retry'
 import {inspect} from 'util'
@@ -49,9 +48,9 @@ export class Merger {
     )
 
     await client.pulls.merge({
-        owner,
-        repo,
-        pull_number: this.cfg.pullRequestNumber
+      owner,
+      repo,
+      pull_number: this.cfg.pullRequestNumber
     })
   }
 }
