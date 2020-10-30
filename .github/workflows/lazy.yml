@@ -1,0 +1,8 @@
+name: 'build-test'
+on: pull_request
+
+jobs:
+  lazy-test: 
+    runs-on: ubuntu-latest
+    steps:
+      - run: sleep 120

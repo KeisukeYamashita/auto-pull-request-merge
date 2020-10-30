@@ -1,10 +1,10 @@
 import * as core from '@actions/core'
 import {Inputs, Merger} from './merger'
-import { inspect } from 'util'
+import {inspect} from 'util'
 
 async function run(): Promise<void> {
   try {
-    const [owner, repo] = core.getInput('repository').split("/")
+    const [owner, repo] = core.getInput('repository').split('/')
 
     const inputs: Inputs = {
       owner,
