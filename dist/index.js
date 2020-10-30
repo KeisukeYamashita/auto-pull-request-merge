@@ -4855,6 +4855,7 @@ class Merger {
                 }
                 catch (err) {
                     core.debug(`failed retry count:${count} with error ${util_1.inspect(err)}`);
+                    throw err;
                 }
             }));
             yield client.pulls.merge({
