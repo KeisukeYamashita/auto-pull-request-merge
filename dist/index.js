@@ -1437,7 +1437,7 @@ function run() {
                 repo,
                 pullRequestNumber: Number(core.getInput('pullRequestNumber')),
                 token: core.getInput('token'),
-                timeoutSeconds: Number(core.getInput('timeoutSeconds')) * 1000
+                timeoutSeconds: Number(core.getInput('timeoutSeconds'))
             };
             core.debug(`Inputs: ${util_1.inspect(inputs)}`);
             const merger = new merger_1.Merger(inputs);
@@ -4837,7 +4837,9 @@ const util_1 = __webpack_require__(669);
 class Merger {
     constructor(cfg) {
         this.cfg = cfg;
-        this.retry = new retry_1.default().timeout(this.cfg.timeoutSeconds).interval(this.cfg.intervalSeconds);
+        this.retry = new retry_1.default()
+            .timeout(this.cfg.timeoutSeconds)
+            .interval(this.cfg.intervalSeconds);
     }
     merge() {
         return __awaiter(this, void 0, void 0, function* () {
