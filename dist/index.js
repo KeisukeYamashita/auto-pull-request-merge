@@ -1522,6 +1522,7 @@ class Retry {
                     yield this.wait();
                 }
             }
+            throw new Error('timeout');
         });
     }
 }
@@ -4841,6 +4842,7 @@ class Merger {
                 repo,
                 pull_number: this.cfg.pullRequestNumber
             });
+            // "statuses_url" always exists
             const ref = pr.statuses_url.split('/').pop();
             yield retry.exec((count) => __awaiter(this, void 0, void 0, function* () {
                 try {
@@ -4851,6 +4853,11 @@ class Merger {
                     });
                     if (commitStatuses.every(status => status.state === 'success')) {
                         throw new Error('not every commit status is success');
+                    }
+                    const totalStatus = commitStatuses.length;
+                    const totalSuccessStatuses = commitStatuses.filter(status => status.state === 'success').length;
+                    if ((totalStatus - 1) !== totalSuccessStatuses) {
+                        throw new Error(`Not all status success, ${totalSuccessStatuses} out of ${totalStatus} success`);
                     }
                 }
                 catch (err) {
