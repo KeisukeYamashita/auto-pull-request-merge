@@ -4856,7 +4856,7 @@ class Merger {
                     }
                     const totalStatus = commitStatuses.length;
                     const totalSuccessStatuses = commitStatuses.filter(status => status.state === 'success').length;
-                    if ((totalStatus - 1) !== totalSuccessStatuses) {
+                    if (totalStatus - 1 !== totalSuccessStatuses) {
                         throw new Error(`Not all status success, ${totalSuccessStatuses} out of ${totalStatus} success`);
                     }
                 }
