@@ -37,6 +37,7 @@ jobs:
 
 | Name | Description | Default |
 | --- | --- | --- |
+| `labels` | Label that the target pull request should have | - |
 | `intervalSeconds` | Seconds between the check | `0.1` | 
 | `repostiory` | The GitHub repository containing the pull request | Current repository | 
 | `pullRequestNumber` | The number of the pull request. | `github.event.pull_request.number` |
