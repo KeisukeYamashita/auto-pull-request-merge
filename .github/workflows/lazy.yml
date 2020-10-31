@@ -1,4 +1,4 @@
-name: 'build-test'
+name: Lazy Test
 on: pull_request
 
 jobs:
