@@ -1432,6 +1432,7 @@ function run() {
             const [owner, repo] = core.getInput('repository').split('/');
             const inputs = {
                 intervalSeconds: Number(core.getInput('intervalSeconds')) * 1000,
+                labels: core.getInput('labels').split(','),
                 owner,
                 repo,
                 pullRequestNumber: Number(core.getInput('pullRequestNumber')),
@@ -1505,6 +1506,10 @@ class Retry {
     }
     timeout(n) {
         this._timeout = n;
+        return this;
+    }
+    interval(n) {
+        this._interval = n;
         return this;
     }
     exec(f) {
@@ -4832,20 +4837,24 @@ const util_1 = __webpack_require__(669);
 class Merger {
     constructor(cfg) {
         this.cfg = cfg;
+        this.retry = new retry_1.default().timeout(this.cfg.timeoutSeconds).interval(this.cfg.intervalSeconds);
     }
     merge() {
         return __awaiter(this, void 0, void 0, function* () {
             const client = github.getOctokit(this.cfg.token);
-            const retry = new retry_1.default().timeout(this.cfg.timeoutSeconds);
             const { owner, repo } = this.cfg;
-            const { data: pr } = yield client.pulls.get({
-                owner,
-                repo,
-                pull_number: this.cfg.pullRequestNumber
-            });
-            // "statuses_url" always exists
-            const ref = pr.statuses_url.split('/').pop();
-            yield retry.exec((count) => __awaiter(this, void 0, void 0, function* () {
+            yield this.retry.exec((count) => __awaiter(this, void 0, void 0, function* () {
+                const { data: pr } = yield client.pulls.get({
+                    owner,
+                    repo,
+                    pull_number: this.cfg.pullRequestNumber
+                });
+                core.debug(`Pull request ${util_1.inspect(pr)}`);
+                if (!this.cfg.labels.every(needLabel => pr.labels.find(label => label.name === needLabel))) {
+                    throw new Error(`Needed Label not included in this pull request`);
+                }
+                // "statuses_url" always exists
+                const ref = pr.statuses_url.split('/').pop();
                 try {
                     const { data: commitStatuses } = yield client.repos.listCommitStatusesForRef({
                         owner,

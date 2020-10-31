@@ -2,10 +2,12 @@
 [![CI](https://github.com/KeisukeYamashita/auto-merge/workflows/build-test/badge.svg)](https://github.com/KeisukeYamashita/auto-merge/actions?query=workflow%3Abuild-test)
 [![GitHub Marketplace](https://img.shields.io/badge/Marketplace-Auto%20Merge-blue.svg?colorA=24292e&colorB=0366d6&style=flat&longCache=true&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAM6wAADOsB5dZE0gAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAERSURBVCiRhZG/SsMxFEZPfsVJ61jbxaF0cRQRcRJ9hlYn30IHN/+9iquDCOIsblIrOjqKgy5aKoJQj4O3EEtbPwhJbr6Te28CmdSKeqzeqr0YbfVIrTBKakvtOl5dtTkK+v4HfA9PEyBFCY9AGVgCBLaBp1jPAyfAJ/AAdIEG0dNAiyP7+K1qIfMdonZic6+WJoBJvQlvuwDqcXadUuqPA1NKAlexbRTAIMvMOCjTbMwl1LtI/6KWJ5Q6rT6Ht1MA58AX8Apcqqt5r2qhrgAXQC3CZ6i1+KMd9TRu3MvA3aH/fFPnBodb6oe6HM8+lYHrGdRXW8M9bMZtPXUji69lmf5Cmamq7quNLFZXD9Rq7v0Bpc1o/tp0fisAAAAASUVORK5CYII=)](https://github.com/marketplace/actions/auto-merge)
 
-A GitHub Action that post comment on a GitHub Issue or Pull Request.
-If the same content is posted before, this action will delete the existing one and post a new one.
+A GitHub Action that merges a pull request automatically.
 
-This action extract the number from an issue or a pull request which has triggered this by default. You don't need to specify the issue number by `${{ github.event.issue.number }}` or `${{ github.event.pull_request.number }}` if you want to post to its issue or pull request.
+Other GitHub Actions that do merge automatically are like merging based on some user input.
+**This GitHub Actions is designed to merge automatically when a pull request comes in.**
+
+This action extract the number from a pull request which has triggered this by default. You don't need to specify the pull request number by `${{ github.event.pull_request.number }}`.
 
 ## Usage
 
@@ -44,6 +46,17 @@ jobs:
 ### Action outputs
 
 Nothing.
+
+### Disclaimer
+#### GitHub API rate limit consumption
+
+When a Pull Request is created, this GitHub Actions polls the commit status of the Pull Request and if it's ready to merge, it will merge it. You can set the interval by `intervalSeconds`, but depending on the user's input, you may be subject to an inordinate number of API calls. Be careful when setting this up.
+
+#### GitHub Actions charge and quota
+
+GitHub Actions are charged by runtime, and quotas are set for some users on free plans and other plans.
+This action checks for other statuses to pass, so it can take a lot of time to run.
+By default, it is set to time out after 1 minute, but you can change by `timeoutSeconds` if you need to.
 
 ### Accessing issues in other repositories
 

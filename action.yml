@@ -3,9 +3,13 @@ description: 'Provide a description here'
 author: 'Your name or organization here'
 inputs:
   intervarSeconds:
-    required: true
+    required: false
     description: 'Seconds between the check'
     default: '0.1'
+  labels:
+    required: false
+    description: 'Comma seperated labes that target pull request should have'
+    default: ''
   repository:
     required: false
     description: 'The GitHub repository containing the issue or pr.'
