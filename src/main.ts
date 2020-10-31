@@ -13,7 +13,7 @@ async function run(): Promise<void> {
       repo,
       pullRequestNumber: Number(core.getInput('pullRequestNumber')),
       token: core.getInput('token'),
-      timeoutSeconds: Number(core.getInput('timeoutSeconds')) * 1000
+      timeoutSeconds: Number(core.getInput('timeoutSeconds'))
     }
 
     core.debug(`Inputs: ${inspect(inputs)}`)
