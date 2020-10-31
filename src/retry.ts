@@ -16,6 +16,11 @@ export default class Retry {
     return this
   }
 
+  interval(n: number): Retry {
+    this._interval = n
+    return this
+  }
+
   async exec<T>(f: (count: number) => Promise<T>): Promise<T | undefined> {
     const timeout = this._timeout
     let count = 0

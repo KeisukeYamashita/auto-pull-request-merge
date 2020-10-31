@@ -1431,11 +1431,12 @@ function run() {
         try {
             const [owner, repo] = core.getInput('repository').split('/');
             const inputs = {
+                intervalSeconds: Number(core.getInput('intervalSeconds')) * 1000,
                 owner,
                 repo,
                 pullRequestNumber: Number(core.getInput('pullRequestNumber')),
                 token: core.getInput('token'),
-                timeoutSeconds: Number(core.getInput('timeoutSeconds'))
+                timeoutSeconds: Number(core.getInput('timeoutSeconds')) * 1000
             };
             core.debug(`Inputs: ${util_1.inspect(inputs)}`);
             const merger = new merger_1.Merger(inputs);

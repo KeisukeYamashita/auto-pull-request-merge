@@ -2,6 +2,10 @@ name: 'Your name here'
 description: 'Provide a description here'
 author: 'Your name or organization here'
 inputs:
+  intervarSeconds:
+    required: true
+    description: 'Seconds between the check'
+    default: '0.1'
   repository:
     required: false
     description: 'The GitHub repository containing the issue or pr.'

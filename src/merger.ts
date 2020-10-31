@@ -4,6 +4,7 @@ import Retry from './retry'
 import {inspect} from 'util'
 
 export interface Inputs {
+  intervalSeconds: number
   repo: string
   owner: string
   pullRequestNumber: number
@@ -12,11 +13,14 @@ export interface Inputs {
 }
 
 export class Merger {
-  constructor(private cfg: Inputs) {}
+  private retry: Retry
+  
+  constructor(private cfg: Inputs) {
+    this.retry = new Retry().timeout(this.cfg.timeoutSeconds).interval(this.cfg.intervalSeconds)
+  }
 
   async merge(): Promise<void> {
     const client = github.getOctokit(this.cfg.token)
-    const retry = new Retry().timeout(this.cfg.timeoutSeconds)
     const {owner, repo} = this.cfg
 
     const {data: pr} = await client.pulls.get({
@@ -28,7 +32,7 @@ export class Merger {
     // "statuses_url" always exists
     const ref = pr.statuses_url.split('/').pop()!
 
-    await retry.exec(
+    await this.retry.exec(
       async (count): Promise<void> => {
         try {
           const {

@@ -7,11 +7,12 @@ async function run(): Promise<void> {
     const [owner, repo] = core.getInput('repository').split('/')
 
     const inputs: Inputs = {
+      intervalSeconds: Number(core.getInput('intervalSeconds')) * 1000,
       owner,
       repo,
       pullRequestNumber: Number(core.getInput('pullRequestNumber')),
       token: core.getInput('token'),
-      timeoutSeconds: Number(core.getInput('timeoutSeconds'))
+      timeoutSeconds: Number(core.getInput('timeoutSeconds')) * 1000
     }
 
     core.debug(`Inputs: ${inspect(inputs)}`)

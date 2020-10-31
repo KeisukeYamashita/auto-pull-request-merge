@@ -27,42 +27,28 @@ jobs:
   commit-message-check:
     runs-on: ubuntu-latest
     steps:
-      - name: Post comment
+      - name: Auto merge
         uses: KeisukeYamashita/auto-merge@v1
-        with:
-          comment: |
-            Issue title must start with 'ABC-'.
-            Auto-closing this issue.
 ```
 
 ### Action inputs
 
 | Name | Description | Default |
 | --- | --- | --- |
-| `check-only-first-line` | If `true`, If the first line is same, it is considered to be the same post. It works when `unique` is `true`. | `false` |  
-| `comment` | Comment to post. | - (Required) |
-| `unique` | If `true`, existing comment with same body will be deleted. | `true` |
-| `number` | The number of the issue to post. | `github.event.issue.number` |
-| `repository` | The GitHub repository containing the issue or pr. | Current repository |
+| `intervalSeconds` | Seconds between the check | `0.1` | 
+| `repostiory` | The GitHub repository containing the pull request | Current repository | 
+| `pullRequestNumber` | The number of the pull request. | `github.event.pull_request.number` |
+| `timeoutSeconds` | Seconds to timeout this action | `60`
 | `token` | `GITHUB_TOKEN` or a `repo` scoped [PAT](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token). | `GITHUB_TOKEN` |
 
 ### Action outputs
 
-| Name | Description |
-| --- | --- |
-| `deleted-comment` | If there was existing same comments or not that was deleted |
-| `deleted-comment-id` | The deleted comment ID | 
-| `comment-id` | The posted comment ID | 
-| `match-first-line` | If match first line or not | 
+Nothing.
 
 ### Accessing issues in other repositories
 
 You can close issues in another repository by using a [PAT](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) instead of `GITHUB_TOKEN`.
 The user associated with the PAT must have write access to the repository.
-
-## Acknowledgement
-I've derived the design for this action from @peter-evans's GitHub Actions.
-Thanks to @perter-evans and the contributors for all the hard work and sharing it as an opensource project.
 
 ## License
 
