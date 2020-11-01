@@ -1,6 +1,6 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'auto-merge-on-check-status'
+description: 'Merge PR on check statues'
+author: 'KeisukeYamashita'
 inputs:
   intervalSeconds:
     required: false
