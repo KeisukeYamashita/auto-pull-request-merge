@@ -1,6 +1,6 @@
 # Gotenks Merge(Auto Pull Request merge)
 [![CI](https://github.com/KeisukeYamashita/gotenks/workflows/build-test/badge.svg)](https://github.com/KeisukeYamashita/gotenks/actions?query=workflow%3Abuild-test)
-[![GitHub Marketplace](https://img.shields.io/badge/Marketplace-Gotenks%20Merge%20Pull%20Request-blue.svg?colorA=24292e&colorB=0366d6&style=flat&longCache=true&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAM6wAADOsB5dZE0gAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAERSURBVCiRhZG/SsMxFEZPfsVJ61jbxaF0cRQRcRJ9hlYn30IHN/+9iquDCOIsblIrOjqKgy5aKoJQj4O3EEtbPwhJbr6Te28CmdSKeqzeqr0YbfVIrTBKakvtOl5dtTkK+v4HfA9PEyBFCY9AGVgCBLaBp1jPAyfAJ/AAdIEG0dNAiyP7+K1qIfMdonZic6+WJoBJvQlvuwDqcXadUuqPA1NKAlexbRTAIMvMOCjTbMwl1LtI/6KWJ5Q6rT6Ht1MA58AX8Apcqqt5r2qhrgAXQC3CZ6i1+KMd9TRu3MvA3aH/fFPnBodb6oe6HM8+lYHrGdRXW8M9bMZtPXUji69lmf5Cmamq7quNLFZXD9Rq7v0Bpc1o/tp0fisAAAAASUVORK5CYII=)](https://github.com/marketplace/actions/gotenks-merge)
+[![GitHub Marketplace](https://img.shields.io/badge/Marketplace-Gotenks%20Merge%20Pull%20Request-blue.svg?colorA=24292e&colorB=0366d6&style=flat&longCache=true&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAM6wAADOsB5dZE0gAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAERSURBVCiRhZG/SsMxFEZPfsVJ61jbxaF0cRQRcRJ9hlYn30IHN/+9iquDCOIsblIrOjqKgy5aKoJQj4O3EEtbPwhJbr6Te28CmdSKeqzeqr0YbfVIrTBKakvtOl5dtTkK+v4HfA9PEyBFCY9AGVgCBLaBp1jPAyfAJ/AAdIEG0dNAiyP7+K1qIfMdonZic6+WJoBJvQlvuwDqcXadUuqPA1NKAlexbRTAIMvMOCjTbMwl1LtI/6KWJ5Q6rT6Ht1MA58AX8Apcqqt5r2qhrgAXQC3CZ6i1+KMd9TRu3MvA3aH/fFPnBodb6oe6HM8+lYHrGdRXW8M9bMZtPXUji69lmf5Cmamq7quNLFZXD9Rq7v0Bpc1o/tp0fisAAAAASUVORK5CYII=)](https://github.com/marketplace/actions/gotenks-auot-pr-merge)
 
 <p align="center">
   <img src="https://media.giphy.com/media/TbYgHMnICI1A4/giphy.gif" style="width:70%;margin:20px 0px;">
@@ -17,7 +17,7 @@ This action extract the number from a pull request which has triggered this by d
 
 ```yml
       - name: Create Comment
-        uses: KeisukeYamashita/gotenks-merge@v1
+        uses: KeisukeYamashita/gotenks-auot-pr-merge@v1
 ```
 
 ### Trigger by `pull_request` event with custom check
@@ -29,7 +29,7 @@ on: pull_request
 jobs:
   auto-merge:
     - name: Merge
-      uses: KeisukeYamashita/gotenks-merge@v1
+      uses: KeisukeYamashita/gotenks-auot-pr-merge@v1
       with:
         intervalSeconds: 10
         timeoutSeconds: 30
