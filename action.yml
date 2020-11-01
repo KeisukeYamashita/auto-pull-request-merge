@@ -1,5 +1,5 @@
-name: 'auto-merge-on-check-status'
-description: 'Merge PR on check statues'
+name: 'auto-merge'
+description: 'Auto PR Merge PR'
 author: 'KeisukeYamashita'
 inputs:
   intervalSeconds:
