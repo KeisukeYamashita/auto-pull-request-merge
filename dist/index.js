@@ -4851,7 +4851,6 @@ class Merger {
                     repo,
                     pull_number: this.cfg.pullRequestNumber
                 });
-                core.debug(`Pull request ${pr.number}`);
                 if (!this.cfg.labels.every(needLabel => pr.labels.find(label => label.name === needLabel))) {
                     throw new Error(`Needed Label not included in this pull request`);
                 }
