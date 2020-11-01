@@ -9,4 +9,4 @@ jobs:
       - uses: ./
         with:
           intervalSeconds: 1
-          timeoutSeconds: 10
+          timeoutSeconds: 60
