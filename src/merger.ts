@@ -28,24 +28,24 @@ export class Merger {
 
     await this.retry.exec(
       async (count): Promise<void> => {
-        const {data: pr} = await client.pulls.get({
-          owner,
-          repo,
-          pull_number: this.cfg.pullRequestNumber
-        })
-
-        if (
-          !this.cfg.labels.every(needLabel =>
-            pr.labels.find(label => label.name === needLabel)
-          )
-        ) {
-          throw new Error(`Needed Label not included in this pull request`)
-        }
-
-        // "statuses_url" always exists
-        const ref = pr.statuses_url.split('/').pop()!
-
         try {
+          const {data: pr} = await client.pulls.get({
+            owner,
+            repo,
+            pull_number: this.cfg.pullRequestNumber
+          })
+
+          if (
+            !this.cfg.labels.every(needLabel =>
+              pr.labels.find(label => label.name === needLabel)
+            )
+          ) {
+            throw new Error(`Needed Label not included in this pull request`)
+          }
+
+          // "statuses_url" always exists
+          const ref = pr.statuses_url.split('/').pop()!
+
           const {
             data: commitStatuses
           } = await client.repos.listCommitStatusesForRef({

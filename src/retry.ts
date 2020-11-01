@@ -29,7 +29,7 @@ export default class Retry {
       try {
         return await f(count++)
       } catch (err) {
-        core.debug(err)
+        core.debug(`Catch error for retry try ${err}`)
       } finally {
         await this.wait()
       }

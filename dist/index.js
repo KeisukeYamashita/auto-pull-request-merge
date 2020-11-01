@@ -1522,7 +1522,7 @@ class Retry {
                     return yield f(count++);
                 }
                 catch (err) {
-                    core.debug(err);
+                    core.debug(`Catch error for retry try ${err}`);
                 }
                 finally {
                     yield this.wait();
@@ -4846,17 +4846,17 @@ class Merger {
             const client = github.getOctokit(this.cfg.token);
             const { owner, repo } = this.cfg;
             yield this.retry.exec((count) => __awaiter(this, void 0, void 0, function* () {
-                const { data: pr } = yield client.pulls.get({
-                    owner,
-                    repo,
-                    pull_number: this.cfg.pullRequestNumber
-                });
-                if (!this.cfg.labels.every(needLabel => pr.labels.find(label => label.name === needLabel))) {
-                    throw new Error(`Needed Label not included in this pull request`);
-                }
-                // "statuses_url" always exists
-                const ref = pr.statuses_url.split('/').pop();
                 try {
+                    const { data: pr } = yield client.pulls.get({
+                        owner,
+                        repo,
+                        pull_number: this.cfg.pullRequestNumber
+                    });
+                    if (!this.cfg.labels.every(needLabel => pr.labels.find(label => label.name === needLabel))) {
+                        throw new Error(`Needed Label not included in this pull request`);
+                    }
+                    // "statuses_url" always exists
+                    const ref = pr.statuses_url.split('/').pop();
                     const { data: commitStatuses } = yield client.repos.listCommitStatusesForRef({
                         owner,
                         repo,
