@@ -41,6 +41,7 @@ jobs:
 | `intervalSeconds` | Seconds between the check | `0.1` | 
 | `repostiory` | The GitHub repository containing the pull request | Current repository | 
 | `pullRequestNumber` | The number of the pull request. | `github.event.pull_request.number` |
+| `sha` | SHA of the commit. | `github.event.pull_request.head.number` |
 | `timeoutSeconds` | Seconds to timeout this action | `60`
 | `token` | `GITHUB_TOKEN` or a `repo` scoped [PAT](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token). | `GITHUB_TOKEN` |
 
