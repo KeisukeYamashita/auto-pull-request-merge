@@ -2,6 +2,7 @@ import * as github from '@actions/github'
 import * as core from '@actions/core'
 import Retry from './retry'
 import {inspect} from 'util'
+import * as webhook from '@octokit/webhooks'
 
 export interface Inputs {
   intervalSeconds: number
@@ -45,20 +46,20 @@ export class Merger {
             }
           }
 
-          // "statuses_url" always exists
-          const ref = pr.statuses_url.split('/').pop()!
+          const eventPayload = (await import(
+            process.env.GITHUB_EVENT_PATH!
+          )) as webhook.EventPayloads.WebhookPayloadPullRequestPullRequest
 
-          const {
-            data: commitStatuses
-          } = await client.repos.listCommitStatusesForRef({
-            owner,
-            repo,
-            ref
+          const {data: checks} = await client.checks.listForRef({
+            owner: this.cfg.owner,
+            repo: this.cfg.repo,
+            ref: eventPayload.head.sha
           })
 
-          const totalStatus = commitStatuses.length
-          const totalSuccessStatuses = commitStatuses.filter(
-            status => status.state === 'success'
+          const totalStatus = checks.total_count
+          const totalSuccessStatuses = checks.check_runs.filter(
+            check =>
+              check.conclusion === 'success' || check.conclusion === 'skipped'
           ).length
 
           if (totalStatus - 1 !== totalSuccessStatuses) {
