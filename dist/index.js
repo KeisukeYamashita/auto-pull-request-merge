@@ -1432,7 +1432,7 @@ function run() {
             const [owner, repo] = core.getInput('repository').split('/');
             const inputs = {
                 intervalSeconds: Number(core.getInput('intervalSeconds')) * 1000,
-                labels: core.getInput('labels').split(','),
+                labels: core.getInput('labels') === '' ? [] : core.getInput('labels').split(','),
                 owner,
                 repo,
                 pullRequestNumber: Number(core.getInput('pullRequestNumber')),
@@ -4852,8 +4852,10 @@ class Merger {
                         repo,
                         pull_number: this.cfg.pullRequestNumber
                     });
-                    if (!this.cfg.labels.every(needLabel => pr.labels.find(label => label.name === needLabel))) {
-                        throw new Error(`Needed Label not included in this pull request`);
+                    if (this.cfg.labels.length > 0) {
+                        if (!this.cfg.labels.every(needLabel => pr.labels.find(label => label.name === needLabel))) {
+                            throw new Error(`Needed Label not included in this pull request`);
+                        }
                     }
                     // "statuses_url" always exists
                     const ref = pr.statuses_url.split('/').pop();

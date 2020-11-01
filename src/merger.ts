@@ -35,12 +35,14 @@ export class Merger {
             pull_number: this.cfg.pullRequestNumber
           })
 
-          if (
-            !this.cfg.labels.every(needLabel =>
-              pr.labels.find(label => label.name === needLabel)
-            )
-          ) {
-            throw new Error(`Needed Label not included in this pull request`)
+          if (this.cfg.labels.length > 0) {
+            if (
+              !this.cfg.labels.every(needLabel =>
+                pr.labels.find(label => label.name === needLabel)
+              )
+            ) {
+              throw new Error(`Needed Label not included in this pull request`)
+            }
           }
 
           // "statuses_url" always exists

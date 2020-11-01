@@ -8,7 +8,10 @@ async function run(): Promise<void> {
 
     const inputs: Inputs = {
       intervalSeconds: Number(core.getInput('intervalSeconds')) * 1000,
-      labels: core.getInput('labels').split(','),
+      labels:
+        core.getInput('labels') === ''
+          ? []
+          : core.getInput('labels').split(','),
       owner,
       repo,
       pullRequestNumber: Number(core.getInput('pullRequestNumber')),
