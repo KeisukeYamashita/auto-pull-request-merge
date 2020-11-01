@@ -68,18 +68,18 @@ export class Merger {
               `Not all status success, ${totalSuccessStatuses} out of ${totalStatus} success`
             )
           }
+
+          await client.pulls.merge({
+            owner,
+            repo,
+            pull_number: this.cfg.pullRequestNumber
+          })
         } catch (err) {
           core.debug(`failed retry count:${count} with error ${inspect(err)}`)
           throw err
         }
       }
     )
-
-    await client.pulls.merge({
-      owner,
-      repo,
-      pull_number: this.cfg.pullRequestNumber
-    })
   }
 }
 

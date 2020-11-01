@@ -4870,17 +4870,17 @@ class Merger {
                     if (totalStatus - 1 !== totalSuccessStatuses) {
                         throw new Error(`Not all status success, ${totalSuccessStatuses} out of ${totalStatus} success`);
                     }
+                    yield client.pulls.merge({
+                        owner,
+                        repo,
+                        pull_number: this.cfg.pullRequestNumber
+                    });
                 }
                 catch (err) {
                     core.debug(`failed retry count:${count} with error ${util_1.inspect(err)}`);
                     throw err;
                 }
             }));
-            yield client.pulls.merge({
-                owner,
-                repo,
-                pull_number: this.cfg.pullRequestNumber
-            });
         });
     }
 }
