@@ -1,16 +1,29 @@
 import * as core from '@actions/core'
-import {wait} from './wait'
+import {Inputs, Merger} from './merger'
+import {inspect} from 'util'
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
+    const [owner, repo] = core.getInput('repository').split('/')
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    const inputs: Inputs = {
+      intervalSeconds: Number(core.getInput('intervalSeconds')) * 1000,
+      labels:
+        core.getInput('labels') === ''
+          ? []
+          : core.getInput('labels').split(','),
+      owner,
+      repo,
+      pullRequestNumber: Number(core.getInput('pullRequestNumber')),
+      sha: core.getInput('sha'),
+      token: core.getInput('token'),
+      timeoutSeconds: Number(core.getInput('timeoutSeconds'))
+    }
 
-    core.setOutput('time', new Date().toTimeString())
+    core.debug(`Inputs: ${inspect(inputs)}`)
+
+    const merger = new Merger(inputs)
+    await merger.merge()
   } catch (error) {
     core.setFailed(error.message)
   }

@@ -2,10 +2,37 @@ name: 'Your name here'
 description: 'Provide a description here'
 author: 'Your name or organization here'
 inputs:
-  milliseconds: # change this
-    required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  intervalSeconds:
+    required: false
+    description: 'Seconds between the check'
+    default: '0.1'
+  labels:
+    required: false
+    description: 'Comma seperated labes that target pull request should have'
+    default: ''
+  repository:
+    required: false
+    description: 'The GitHub repository containing the issue or pr.'
+    default: ${{ github.repository }}
+  pullRequestNumber:
+    required: false
+    description: 'Number of the pull request'
+    default: ${{ github.event.pull_request.number }}
+  sha:
+    required: false
+    description: 'SHA of the pull request commit'
+    default: ${{ github.event.pull_request.head.sha }}
+  timeoutSeconds:
+    required: false
+    description: 'Seconds to timeout'
+    default: '60'
+  token:
+    required: false
+    description: 'Credential to access to the repo to post the comment'
+    default: ${{ github.token }}
 runs:
   using: 'node12'
   main: 'dist/index.js'
+branding:
+  icon: 'git-merge'
+  color: 'green'
