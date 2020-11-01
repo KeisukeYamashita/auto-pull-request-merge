@@ -1,7 +1,7 @@
 {
-  "name": "auto-merge",
+  "name": "auto-merge-on-status",
   "version": "1.0.0",
-  "description": "Merge PR automatically",
+  "description": "Merge PR automatically on commit status",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KeisukeYamashita/auto-merge.git"
+    "url": "git+https://github.com/KeisukeYamashita/auto-merge-on-status.git"
   },
   "keywords": [
     "actions",
