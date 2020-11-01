@@ -1,5 +1,5 @@
-name: 'gotenks'
-description: 'Auto PR Merge PR'
+name: 'gotenks-merge'
+description: 'Auto PR Merge'
 author: 'KeisukeYamashita'
 inputs:
   intervalSeconds:
