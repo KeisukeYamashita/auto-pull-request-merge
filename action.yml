@@ -2,7 +2,7 @@ name: 'Your name here'
 description: 'Provide a description here'
 author: 'Your name or organization here'
 inputs:
-  intervarSeconds:
+  intervalSeconds:
     required: false
     description: 'Seconds between the check'
     default: '0.1'
