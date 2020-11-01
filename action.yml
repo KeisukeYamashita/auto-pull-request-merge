@@ -1,4 +1,4 @@
-name: 'auto-merge-pull-request'
+name: 'auto-merger'
 description: 'Auto PR Merge PR'
 author: 'KeisukeYamashita'
 inputs:
