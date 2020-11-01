@@ -4866,9 +4866,6 @@ class Merger {
                         repo,
                         ref
                     });
-                    if (commitStatuses.every(status => status.state === 'success')) {
-                        throw new Error('not every commit status is success');
-                    }
                     const totalStatus = commitStatuses.length;
                     const totalSuccessStatuses = commitStatuses.filter(status => status.state === 'success').length;
                     if (totalStatus - 1 !== totalSuccessStatuses) {
