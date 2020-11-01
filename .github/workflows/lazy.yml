@@ -1,8 +1,0 @@
-name: Sharp Test
-on: pull_request
-
-jobs:
-  sharp-test: 
-    runs-on: ubuntu-latest
-    steps:
-      - run: sleep 120
