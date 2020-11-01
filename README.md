@@ -14,23 +14,21 @@ This action extract the number from a pull request which has triggered this by d
 ```yml
       - name: Create Comment
         uses: KeisukeYamashita/auto-merge-on-check-status@v1
-        with:
-          number: 1
-          comment: Comment for Issue or GitHub Pull Request
 ```
 
-### Post a comment and close the previous same comment
+### Check with custom configuration
 
 This is just an example to show one way in which this action can be used.
 
 ```yml
 on: pull_request
 jobs:
-  commit-message-check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Auto merge
-        uses: KeisukeYamashita/auto-merge-on-check-status@v1
+  auto-merge:
+    - name: Merge
+      uses: KeisukeYamashita/auto-merge-on-check-status@v1
+      with:
+        intervalSeconds: 10
+        timeoutSeconds: 30
 ```
 
 ### Action inputs
@@ -59,11 +57,6 @@ When a Pull Request is created, this GitHub Actions polls the commit status of t
 GitHub Actions are charged by runtime, and quotas are set for some users on free plans and other plans.
 This action checks for other statuses to pass, so it can take a lot of time to run.
 By default, it is set to time out after 1 minute, but you can change by `timeoutSeconds` if you need to.
-
-### Accessing issues in other repositories
-
-You can close issues in another repository by using a [PAT](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) instead of `GITHUB_TOKEN`.
-The user associated with the PAT must have write access to the repository.
 
 ## License
 
