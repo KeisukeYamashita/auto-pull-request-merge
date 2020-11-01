@@ -18,6 +18,10 @@ inputs:
     required: false
     description: 'Number of the pull request'
     default: ${{ github.event.pull_request.number }}
+  sha:
+    required: false
+    description: 'SHA of the pull request commit'
+    default: ${{ github.event.pull_request.head.sha }}
   timeoutSeconds:
     required: false
     description: 'Seconds to timeout'

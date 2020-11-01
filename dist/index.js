@@ -51,6 +51,7 @@ function run() {
                 owner,
                 repo,
                 pullRequestNumber: Number(core.getInput('pullRequestNumber')),
+                sha: core.getInput('sha'),
                 token: core.getInput('token'),
                 timeoutSeconds: Number(core.getInput('timeoutSeconds'))
             };
@@ -133,11 +134,10 @@ class Merger {
                             throw new Error(`Needed Label not included in this pull request`);
                         }
                     }
-                    const eventPayload = yield Promise.resolve().then(() => __importStar(require(process.env.GITHUB_EVENT_PATH)));
                     const { data: checks } = yield client.checks.listForRef({
                         owner: this.cfg.owner,
                         repo: this.cfg.repo,
-                        ref: eventPayload.head.sha
+                        ref: this.cfg.sha
                     });
                     const totalStatus = checks.total_count;
                     const totalSuccessStatuses = checks.check_runs.filter(check => check.conclusion === 'success' || check.conclusion === 'skipped').length;

@@ -15,6 +15,7 @@ async function run(): Promise<void> {
       owner,
       repo,
       pullRequestNumber: Number(core.getInput('pullRequestNumber')),
+      sha: core.getInput('sha'),
       token: core.getInput('token'),
       timeoutSeconds: Number(core.getInput('timeoutSeconds'))
     }

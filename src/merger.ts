@@ -10,6 +10,7 @@ export interface Inputs {
   repo: string
   owner: string
   pullRequestNumber: number
+  sha: string
   token: string
   timeoutSeconds: number
 }
@@ -46,14 +47,10 @@ export class Merger {
             }
           }
 
-          const eventPayload = (await import(
-            process.env.GITHUB_EVENT_PATH!
-          )) as webhook.EventPayloads.WebhookPayloadPullRequestPullRequest
-
           const {data: checks} = await client.checks.listForRef({
             owner: this.cfg.owner,
             repo: this.cfg.repo,
-            ref: eventPayload.head.sha
+            ref: this.cfg.sha
           })
 
           const totalStatus = checks.total_count
