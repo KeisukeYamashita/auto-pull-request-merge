@@ -34,7 +34,7 @@ export class Merger {
           pull_number: this.cfg.pullRequestNumber
         })
 
-        core.debug(`Pull request ${inspect(pr)}`)
+        core.debug(`Pull request ${pr.number}`)
 
         if (
           !this.cfg.labels.every(needLabel =>
