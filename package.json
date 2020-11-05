@@ -1,7 +1,7 @@
 {
-  "name": "auto-merge-on-status",
+  "name": "gotenks-auto-pr-merge",
   "version": "1.0.0",
-  "description": "Merge PR automatically on commit status",
+  "description": "Merge PR automatically",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",

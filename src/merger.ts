@@ -2,9 +2,10 @@ import * as github from '@actions/github'
 import * as core from '@actions/core'
 import Retry from './retry'
 import {inspect} from 'util'
-import * as webhook from '@octokit/webhooks'
 
 export interface Inputs {
+  comment: string
+  ignoreLabels: string[]
   intervalSeconds: number
   labels: string[]
   repo: string
@@ -45,6 +46,16 @@ export class Merger {
             ) {
               throw new Error(`Needed Label not included in this pull request`)
             }
+
+            if (
+              !this.cfg.ignoreLabels.every(needLabel =>
+                pr.labels.find(label => label.name !== needLabel)
+              )
+            ) {
+              throw new Error(
+                `This pull request contains labels that should be ignored`
+              )
+            }
           }
 
           const {data: checks} = await client.checks.listForRef({
@@ -64,18 +75,29 @@ export class Merger {
               `Not all status success, ${totalSuccessStatuses} out of ${totalStatus} success`
             )
           }
-
-          await client.pulls.merge({
-            owner,
-            repo,
-            pull_number: this.cfg.pullRequestNumber
-          })
         } catch (err) {
           core.debug(`failed retry count:${count} with error ${inspect(err)}`)
           throw err
         }
       }
     )
+
+    if (this.cfg.comment) {
+      await client.issues.createComment({
+        owner: this.cfg.owner,
+        repo: this.cfg.repo,
+        issue_number: this.cfg.pullRequestNumber,
+        body: this.cfg.comment
+      })
+
+      core.debug(`Post comment ${inspect(this.cfg.comment)}`)
+    }
+
+    await client.pulls.merge({
+      owner,
+      repo,
+      pull_number: this.cfg.pullRequestNumber
+    })
   }
 }
 
