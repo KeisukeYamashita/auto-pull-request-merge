@@ -54,9 +54,7 @@ export class Merger {
               }
 
               if (
-                !this.cfg.ignoreLabels.every(needLabel =>
-                  pr.labels.find(label => label.name !== needLabel)
-                )
+                pr.labels.some(label => this.cfg.labels.includes(label.name))
               ) {
                 throw new Error(
                   `This pull request contains labels that should be ignored`
@@ -83,6 +81,9 @@ export class Merger {
                   `Not all status success, ${totalSuccessStatuses} out of ${totalStatus} success`
                 )
               }
+
+              core.debug(`All ${totalStatus} status success`)
+              core.debug(`Merge PR ${pr.number}`)
             }
           } catch (err) {
             core.debug(`failed retry count:${count} with error ${inspect(err)}`)
