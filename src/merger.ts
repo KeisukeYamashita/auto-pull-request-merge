@@ -6,6 +6,7 @@ import {inspect} from 'util'
 export interface Inputs {
   comment: string
   ignoreLabels: string[]
+  failStep: boolean
   intervalSeconds: number
   labels: string[]
   repo: string
@@ -23,6 +24,7 @@ export class Merger {
     this.retry = new Retry()
       .timeout(this.cfg.timeoutSeconds)
       .interval(this.cfg.intervalSeconds)
+      .failStep(this.cfg.failStep)
   }
 
   async merge(): Promise<void> {

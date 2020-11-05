@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 export default class Retry {
   private _interval = 100
   private _timeout = 500
+  private _failStep = false
 
   private async wait(): Promise<void> {
     return new Promise((resolve): void => {
@@ -21,6 +22,11 @@ export default class Retry {
     return this
   }
 
+  failStep(b: boolean): Retry {
+    this._failStep = b
+    return this
+  }
+
   async exec<T>(f: (count: number) => Promise<T>): Promise<T | undefined> {
     const timeout = this._timeout
     let count = 0
@@ -35,6 +41,10 @@ export default class Retry {
       }
     }
 
-    throw new Error('timeout')
+    if (this._failStep) {
+      throw new Error('timeout')
+    }
+
+    core.debug('timeout but passing because "failStep" is configure to false')
   }
 }

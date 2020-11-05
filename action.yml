@@ -1,4 +1,4 @@
-name: 'gotenks-auto-pr-merge'
+name: 'auto-pull-request-merge'
 description: 'Auto PR Merge'
 author: 'KeisukeYamashita'
 inputs:
@@ -6,9 +6,17 @@ inputs:
     required: false
     description: 'Seconds between the check'
     default: '0.1'
+  failStep:
+    required: false
+    description: 'Fail the step if the PR is not found or merged'
+    default: 'false'
   labels:
     required: false
     description: 'Comma seperated labes that target pull request should have'
+    default: ''
+  ignoreLabels:
+    required: false
+    description: 'Comma seperated labes that target pull request should not have'
     default: ''
   repository:
     required: false

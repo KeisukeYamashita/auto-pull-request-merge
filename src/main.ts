@@ -12,6 +12,7 @@ async function run(): Promise<void> {
         core.getInput('labels') === ''
           ? []
           : core.getInput('labels').split(','),
+      failStep: core.getInput('failStep') === 'true',
       intervalSeconds: Number(core.getInput('intervalSeconds')) * 1000,
       labels:
         core.getInput('labels') === ''

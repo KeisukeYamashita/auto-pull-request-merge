@@ -48,6 +48,7 @@ function run() {
                 ignoreLabels: core.getInput('labels') === ''
                     ? []
                     : core.getInput('labels').split(','),
+                failStep: core.getInput('failStep') === 'true',
                 intervalSeconds: Number(core.getInput('intervalSeconds')) * 1000,
                 labels: core.getInput('labels') === ''
                     ? []
@@ -120,7 +121,8 @@ class Merger {
         this.cfg = cfg;
         this.retry = new retry_1.default()
             .timeout(this.cfg.timeoutSeconds)
-            .interval(this.cfg.intervalSeconds);
+            .interval(this.cfg.intervalSeconds)
+            .failStep(this.cfg.failStep);
     }
     merge() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -225,6 +227,7 @@ class Retry {
     constructor() {
         this._interval = 100;
         this._timeout = 500;
+        this._failStep = false;
     }
     wait() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -239,6 +242,10 @@ class Retry {
     }
     interval(n) {
         this._interval = n;
+        return this;
+    }
+    failStep(b) {
+        this._failStep = b;
         return this;
     }
     exec(f) {
@@ -257,7 +264,10 @@ class Retry {
                     yield this.wait();
                 }
             }
-            throw new Error('timeout');
+            if (this._failStep) {
+                throw new Error('timeout');
+            }
+            core.debug('timeout but passing because "failStep" is configure to false');
         });
     }
 }

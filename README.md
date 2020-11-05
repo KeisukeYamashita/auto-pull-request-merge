@@ -41,6 +41,7 @@ jobs:
 | Name | Description | Default |
 | --- | --- | --- |
 | `comment` | Comments to post before merging the pull request | - |
+| `failStep` | Fail the step if no PR has merged | `false` |  
 | `ignoreLabels` | Label that the target pull request shouldn't have | - |
 | `labels` | Label that the target pull request should have | - |
 | `intervalSeconds` | Seconds between the check | `0.1` | 
