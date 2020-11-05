@@ -5,6 +5,7 @@ import {inspect} from 'util'
 import * as webhook from '@octokit/webhooks'
 
 export interface Inputs {
+  comment: string
   intervalSeconds: number
   labels: string[]
   repo: string
@@ -64,18 +65,29 @@ export class Merger {
               `Not all status success, ${totalSuccessStatuses} out of ${totalStatus} success`
             )
           }
-
-          await client.pulls.merge({
-            owner,
-            repo,
-            pull_number: this.cfg.pullRequestNumber
-          })
         } catch (err) {
           core.debug(`failed retry count:${count} with error ${inspect(err)}`)
           throw err
         }
       }
     )
+
+    if (this.cfg.comment) {
+      await client.issues.createComment({
+        owner: this.cfg.owner,
+        repo: this.cfg.repo,
+        issue_number: this.cfg.pullRequestNumber,
+        body: this.cfg.comment
+      })
+
+      core.debug(`Post comment ${inspect(this.cfg.comment)}`)
+    }
+
+    await client.pulls.merge({
+      owner,
+      repo,
+      pull_number: this.cfg.pullRequestNumber
+    })
   }
 }
 

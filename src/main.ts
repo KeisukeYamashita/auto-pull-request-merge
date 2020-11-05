@@ -7,6 +7,7 @@ async function run(): Promise<void> {
     const [owner, repo] = core.getInput('repository').split('/')
 
     const inputs: Inputs = {
+      comment: core.getInput('comment'),
       intervalSeconds: Number(core.getInput('intervalSeconds')) * 1000,
       labels:
         core.getInput('labels') === ''
