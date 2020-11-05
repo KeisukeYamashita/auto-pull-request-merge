@@ -1,4 +1,4 @@
-name: 'gotenks-auot-pr-merge'
+name: 'gotenks-auto-pr-merge'
 description: 'Auto PR Merge'
 author: 'KeisukeYamashita'
 inputs:
