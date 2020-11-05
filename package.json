@@ -1,5 +1,5 @@
 {
-  "name": "gotenks-auto-pr-merge",
+  "name": "auto-pull-request-merge",
   "version": "1.0.0",
   "description": "Merge PR automatically",
   "main": "lib/main.js",

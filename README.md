@@ -50,7 +50,9 @@ jobs:
 
 ### Action outputs
 
-Nothing.
+| Name | Description | 
+| --- | --- | 
+| `commentID` | ID of the comment if you specify `comment` in input | 
 
 ### Disclaimer
 
