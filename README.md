@@ -56,6 +56,7 @@ jobs:
 Nothing.
 
 ### Disclaimer
+
 #### GitHub API rate limit consumption
 
 When a Pull Request is created, this GitHub Actions polls the commit status of the Pull Request and if it's ready to merge, it will merge it. You can set the interval by `intervalSeconds`, but depending on the user's input, you may be subject to an inordinate number of API calls. Be careful when setting this up.
