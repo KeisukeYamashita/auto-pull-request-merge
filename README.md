@@ -17,8 +17,8 @@ This action extract the number from a pull request which has triggered this by d
 ## Usage
 
 ```yml
-      - name: Create Comment
-        uses: KeisukeYamashita/gotenks-auot-pr-merge@v1
+      - name: Merge
+        uses: KeisukeYamashita/gotenks-auto-pr-merge@v1
 ```
 
 ### Trigger by `pull_request` event with custom check
@@ -30,7 +30,7 @@ on: pull_request
 jobs:
   auto-merge:
     - name: Merge
-      uses: KeisukeYamashita/gotenks-auot-pr-merge@v1
+      uses: KeisukeYamashita/gotenks-auto-pr-merge@v1
       with:
         intervalSeconds: 10
         timeoutSeconds: 30
