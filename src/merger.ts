@@ -60,7 +60,9 @@ export class Merger {
                 )
               ) {
                 throw new Error(
-                  `This pull request contains labels that should be ignored`
+                  `This pull request contains labels that should be ignored, labels:${inspect(
+                    pr.labels.map(l => l.name)
+                  )}`
                 )
               }
 
