@@ -128,51 +128,60 @@ class Merger {
         return __awaiter(this, void 0, void 0, function* () {
             const client = github.getOctokit(this.cfg.token);
             const { owner, repo } = this.cfg;
-            yield this.retry.exec((count) => __awaiter(this, void 0, void 0, function* () {
-                try {
-                    const { data: pr } = yield client.pulls.get({
-                        owner,
-                        repo,
-                        pull_number: this.cfg.pullRequestNumber
-                    });
-                    if (this.cfg.labels.length > 0) {
-                        if (!this.cfg.labels.every(needLabel => pr.labels.find(label => label.name === needLabel))) {
-                            throw new Error(`Needed Label not included in this pull request`);
+            try {
+                yield this.retry.exec((count) => __awaiter(this, void 0, void 0, function* () {
+                    try {
+                        const { data: pr } = yield client.pulls.get({
+                            owner,
+                            repo,
+                            pull_number: this.cfg.pullRequestNumber
+                        });
+                        if (this.cfg.labels.length > 0) {
+                            if (!this.cfg.labels.every(needLabel => pr.labels.find(label => label.name === needLabel))) {
+                                throw new Error(`Needed Label not included in this pull request`);
+                            }
+                            if (!this.cfg.ignoreLabels.every(needLabel => pr.labels.find(label => label.name !== needLabel))) {
+                                throw new Error(`This pull request contains labels that should be ignored`);
+                            }
                         }
-                        if (!this.cfg.ignoreLabels.every(needLabel => pr.labels.find(label => label.name !== needLabel))) {
-                            throw new Error(`This pull request contains labels that should be ignored`);
+                        const { data: checks } = yield client.checks.listForRef({
+                            owner: this.cfg.owner,
+                            repo: this.cfg.repo,
+                            ref: this.cfg.sha
+                        });
+                        const totalStatus = checks.total_count;
+                        const totalSuccessStatuses = checks.check_runs.filter(check => check.conclusion === 'success' || check.conclusion === 'skipped').length;
+                        if (totalStatus - 1 !== totalSuccessStatuses) {
+                            throw new Error(`Not all status success, ${totalSuccessStatuses} out of ${totalStatus} success`);
                         }
                     }
-                    const { data: checks } = yield client.checks.listForRef({
+                    catch (err) {
+                        core.debug(`failed retry count:${count} with error ${util_1.inspect(err)}`);
+                        throw err;
+                    }
+                }));
+                if (this.cfg.comment) {
+                    yield client.issues.createComment({
                         owner: this.cfg.owner,
                         repo: this.cfg.repo,
-                        ref: this.cfg.sha
+                        issue_number: this.cfg.pullRequestNumber,
+                        body: this.cfg.comment
                     });
-                    const totalStatus = checks.total_count;
-                    const totalSuccessStatuses = checks.check_runs.filter(check => check.conclusion === 'success' || check.conclusion === 'skipped').length;
-                    if (totalStatus - 1 !== totalSuccessStatuses) {
-                        throw new Error(`Not all status success, ${totalSuccessStatuses} out of ${totalStatus} success`);
-                    }
+                    core.debug(`Post comment ${util_1.inspect(this.cfg.comment)}`);
                 }
-                catch (err) {
-                    core.debug(`failed retry count:${count} with error ${util_1.inspect(err)}`);
+                yield client.pulls.merge({
+                    owner,
+                    repo,
+                    pull_number: this.cfg.pullRequestNumber
+                });
+            }
+            catch (err) {
+                core.debug(`Error on retry error:${util_1.inspect(err)}`);
+                if (this.cfg.failStep) {
                     throw err;
                 }
-            }));
-            if (this.cfg.comment) {
-                yield client.issues.createComment({
-                    owner: this.cfg.owner,
-                    repo: this.cfg.repo,
-                    issue_number: this.cfg.pullRequestNumber,
-                    body: this.cfg.comment
-                });
-                core.debug(`Post comment ${util_1.inspect(this.cfg.comment)}`);
+                core.debug('timeout but passing because "failStep" is configure to false');
             }
-            yield client.pulls.merge({
-                owner,
-                repo,
-                pull_number: this.cfg.pullRequestNumber
-            });
         });
     }
 }
@@ -264,10 +273,7 @@ class Retry {
                     yield this.wait();
                 }
             }
-            if (this._failStep) {
-                throw new Error('timeout');
-            }
-            core.debug('timeout but passing because "failStep" is configure to false');
+            throw new Error('timeout');
         });
     }
 }

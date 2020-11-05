@@ -41,10 +41,6 @@ export default class Retry {
       }
     }
 
-    if (this._failStep) {
-      throw new Error('timeout')
-    }
-
-    core.debug('timeout but passing because "failStep" is configure to false')
+    throw new Error('timeout')
   }
 }
