@@ -3,10 +3,6 @@
 [![GitHub Marketplace][MarketPlace]][MarketPlace-status]
 [![Mergify Status][mergify-status]][mergify]
 
-<p align="center">
-  <img src="https://media.giphy.com/media/TbYgHMnICI1A4/giphy.gif" style="width:70%;margin:20px 0px;">
-<p align="center">
-
 A GitHub Action that merges a pull request automatically by the latest commit check status.
 
 Other GitHub Actions that do merge automatically are like merging based on some user input.
