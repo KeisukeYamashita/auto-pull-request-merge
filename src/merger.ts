@@ -52,6 +52,7 @@ export class Merger {
                   `Needed Label not included in this pull request`
                 )
               }
+              core.debug(`Pull request has all need labels`)
 
               if (
                 pr.labels.some(label => this.cfg.labels.includes(label.name))
@@ -60,6 +61,8 @@ export class Merger {
                   `This pull request contains labels that should be ignored`
                 )
               }
+
+              core.debug(`Pull request doesn't have ignore labels`)
             }
 
             if (this.cfg.checkStatus) {
@@ -93,7 +96,7 @@ export class Merger {
       )
 
       if (this.cfg.comment) {
-        await client.issues.createComment({
+        const {data: resp} = await client.issues.createComment({
           owner: this.cfg.owner,
           repo: this.cfg.repo,
           issue_number: this.cfg.pullRequestNumber,
@@ -101,6 +104,7 @@ export class Merger {
         })
 
         core.debug(`Post comment ${inspect(this.cfg.comment)}`)
+        core.setOutput(`commentID`, resp.id)
       }
 
       await client.pulls.merge({

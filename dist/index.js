@@ -141,9 +141,11 @@ class Merger {
                             if (!this.cfg.labels.every(needLabel => pr.labels.find(label => label.name === needLabel))) {
                                 throw new Error(`Needed Label not included in this pull request`);
                             }
-                            if (!this.cfg.ignoreLabels.every(needLabel => pr.labels.find(label => label.name !== needLabel))) {
+                            core.debug(`Pull request has all need labels`);
+                            if (pr.labels.some(label => this.cfg.labels.includes(label.name))) {
                                 throw new Error(`This pull request contains labels that should be ignored`);
                             }
+                            core.debug(`Pull request doesn't have ignore labels`);
                         }
                         if (this.cfg.checkStatus) {
                             const { data: checks } = yield client.checks.listForRef({
@@ -152,10 +154,13 @@ class Merger {
                                 ref: this.cfg.sha
                             });
                             const totalStatus = checks.total_count;
-                            const totalSuccessStatuses = checks.check_runs.filter(check => check.conclusion === 'success' || check.conclusion === 'skipped').length;
+                            const totalSuccessStatuses = checks.check_runs.filter(check => check.conclusion === 'success' ||
+                                check.conclusion === 'skipped').length;
                             if (totalStatus - 1 !== totalSuccessStatuses) {
                                 throw new Error(`Not all status success, ${totalSuccessStatuses} out of ${totalStatus} success`);
                             }
+                            core.debug(`All ${totalStatus} status success`);
+                            core.debug(`Merge PR ${pr.number}`);
                         }
                     }
                     catch (err) {
@@ -164,13 +169,14 @@ class Merger {
                     }
                 }));
                 if (this.cfg.comment) {
-                    yield client.issues.createComment({
+                    const { data: resp } = yield client.issues.createComment({
                         owner: this.cfg.owner,
                         repo: this.cfg.repo,
                         issue_number: this.cfg.pullRequestNumber,
                         body: this.cfg.comment
                     });
                     core.debug(`Post comment ${util_1.inspect(this.cfg.comment)}`);
+                    core.setOutput(`commentID`, resp.id);
                 }
                 yield client.pulls.merge({
                     owner,
