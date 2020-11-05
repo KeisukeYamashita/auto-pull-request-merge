@@ -2,10 +2,10 @@ import * as github from '@actions/github'
 import * as core from '@actions/core'
 import Retry from './retry'
 import {inspect} from 'util'
-import * as webhook from '@octokit/webhooks'
 
 export interface Inputs {
   comment: string
+  ignoreLabels: string[]
   intervalSeconds: number
   labels: string[]
   repo: string
@@ -45,6 +45,16 @@ export class Merger {
               )
             ) {
               throw new Error(`Needed Label not included in this pull request`)
+            }
+
+            if (
+              !this.cfg.ignoreLabels.every(needLabel =>
+                pr.labels.find(label => label.name !== needLabel)
+              )
+            ) {
+              throw new Error(
+                `This pull request contains labels that should be ignored`
+              )
             }
           }
 

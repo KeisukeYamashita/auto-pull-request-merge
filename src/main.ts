@@ -8,6 +8,10 @@ async function run(): Promise<void> {
 
     const inputs: Inputs = {
       comment: core.getInput('comment'),
+      ignoreLabels:
+        core.getInput('labels') === ''
+          ? []
+          : core.getInput('labels').split(','),
       intervalSeconds: Number(core.getInput('intervalSeconds')) * 1000,
       labels:
         core.getInput('labels') === ''

@@ -44,6 +44,10 @@ function run() {
         try {
             const [owner, repo] = core.getInput('repository').split('/');
             const inputs = {
+                comment: core.getInput('comment'),
+                ignoreLabels: core.getInput('labels') === ''
+                    ? []
+                    : core.getInput('labels').split(','),
                 intervalSeconds: Number(core.getInput('intervalSeconds')) * 1000,
                 labels: core.getInput('labels') === ''
                     ? []
@@ -133,6 +137,9 @@ class Merger {
                         if (!this.cfg.labels.every(needLabel => pr.labels.find(label => label.name === needLabel))) {
                             throw new Error(`Needed Label not included in this pull request`);
                         }
+                        if (!this.cfg.ignoreLabels.every(needLabel => pr.labels.find(label => label.name !== needLabel))) {
+                            throw new Error(`This pull request contains labels that should be ignored`);
+                        }
                     }
                     const { data: checks } = yield client.checks.listForRef({
                         owner: this.cfg.owner,
@@ -144,17 +151,26 @@ class Merger {
                     if (totalStatus - 1 !== totalSuccessStatuses) {
                         throw new Error(`Not all status success, ${totalSuccessStatuses} out of ${totalStatus} success`);
                     }
-                    yield client.pulls.merge({
-                        owner,
-                        repo,
-                        pull_number: this.cfg.pullRequestNumber
-                    });
                 }
                 catch (err) {
                     core.debug(`failed retry count:${count} with error ${util_1.inspect(err)}`);
                     throw err;
                 }
             }));
+            if (this.cfg.comment) {
+                yield client.issues.createComment({
+                    owner: this.cfg.owner,
+                    repo: this.cfg.repo,
+                    issue_number: this.cfg.pullRequestNumber,
+                    body: this.cfg.comment
+                });
+                core.debug(`Post comment ${util_1.inspect(this.cfg.comment)}`);
+            }
+            yield client.pulls.merge({
+                owner,
+                repo,
+                pull_number: this.cfg.pullRequestNumber
+            });
         });
     }
 }
