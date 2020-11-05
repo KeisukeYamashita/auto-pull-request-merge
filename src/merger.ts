@@ -55,7 +55,9 @@ export class Merger {
               core.debug(`Pull request has all need labels`)
 
               if (
-                pr.labels.some(label => this.cfg.labels.includes(label.name))
+                pr.labels.some(label =>
+                  this.cfg.ignoreLabels.includes(label.name)
+                )
               ) {
                 throw new Error(
                   `This pull request contains labels that should be ignored`

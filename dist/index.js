@@ -142,7 +142,7 @@ class Merger {
                                 throw new Error(`Needed Label not included in this pull request`);
                             }
                             core.debug(`Pull request has all need labels`);
-                            if (pr.labels.some(label => this.cfg.labels.includes(label.name))) {
+                            if (pr.labels.some(label => this.cfg.ignoreLabels.includes(label.name))) {
                                 throw new Error(`This pull request contains labels that should be ignored`);
                             }
                             core.debug(`Pull request doesn't have ignore labels`);
