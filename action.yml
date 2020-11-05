@@ -2,6 +2,14 @@ name: 'auto-pull-request-merge'
 description: 'Auto PR Merge'
 author: 'KeisukeYamashita'
 inputs:
+  checkStatus: 
+    required: false
+    description: 'Check all status before merge'
+    default: 'true'
+  comment:
+    required: false
+    description: 'Comment before merge'
+    default: ''
   intervalSeconds:
     required: false
     description: 'Seconds between the check'

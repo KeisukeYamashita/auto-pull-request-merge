@@ -4,6 +4,7 @@ import Retry from './retry'
 import {inspect} from 'util'
 
 export interface Inputs {
+  checkStatus: boolean
   comment: string
   ignoreLabels: string[]
   failStep: boolean
@@ -63,22 +64,25 @@ export class Merger {
               }
             }
 
-            const {data: checks} = await client.checks.listForRef({
-              owner: this.cfg.owner,
-              repo: this.cfg.repo,
-              ref: this.cfg.sha
-            })
+            if (this.cfg.checkStatus) {
+              const {data: checks} = await client.checks.listForRef({
+                owner: this.cfg.owner,
+                repo: this.cfg.repo,
+                ref: this.cfg.sha
+              })
 
-            const totalStatus = checks.total_count
-            const totalSuccessStatuses = checks.check_runs.filter(
-              check =>
-                check.conclusion === 'success' || check.conclusion === 'skipped'
-            ).length
+              const totalStatus = checks.total_count
+              const totalSuccessStatuses = checks.check_runs.filter(
+                check =>
+                  check.conclusion === 'success' ||
+                  check.conclusion === 'skipped'
+              ).length
 
-            if (totalStatus - 1 !== totalSuccessStatuses) {
-              throw new Error(
-                `Not all status success, ${totalSuccessStatuses} out of ${totalStatus} success`
-              )
+              if (totalStatus - 1 !== totalSuccessStatuses) {
+                throw new Error(
+                  `Not all status success, ${totalSuccessStatuses} out of ${totalStatus} success`
+                )
+              }
             }
           } catch (err) {
             core.debug(`failed retry count:${count} with error ${inspect(err)}`)

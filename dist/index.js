@@ -44,6 +44,7 @@ function run() {
         try {
             const [owner, repo] = core.getInput('repository').split('/');
             const inputs = {
+                checkStatus: core.getInput('checkStatus') === 'true',
                 comment: core.getInput('comment'),
                 ignoreLabels: core.getInput('labels') === ''
                     ? []
@@ -144,15 +145,17 @@ class Merger {
                                 throw new Error(`This pull request contains labels that should be ignored`);
                             }
                         }
-                        const { data: checks } = yield client.checks.listForRef({
-                            owner: this.cfg.owner,
-                            repo: this.cfg.repo,
-                            ref: this.cfg.sha
-                        });
-                        const totalStatus = checks.total_count;
-                        const totalSuccessStatuses = checks.check_runs.filter(check => check.conclusion === 'success' || check.conclusion === 'skipped').length;
-                        if (totalStatus - 1 !== totalSuccessStatuses) {
-                            throw new Error(`Not all status success, ${totalSuccessStatuses} out of ${totalStatus} success`);
+                        if (this.cfg.checkStatus) {
+                            const { data: checks } = yield client.checks.listForRef({
+                                owner: this.cfg.owner,
+                                repo: this.cfg.repo,
+                                ref: this.cfg.sha
+                            });
+                            const totalStatus = checks.total_count;
+                            const totalSuccessStatuses = checks.check_runs.filter(check => check.conclusion === 'success' || check.conclusion === 'skipped').length;
+                            if (totalStatus - 1 !== totalSuccessStatuses) {
+                                throw new Error(`Not all status success, ${totalSuccessStatuses} out of ${totalStatus} success`);
+                            }
                         }
                     }
                     catch (err) {
