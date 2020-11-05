@@ -9,7 +9,7 @@ inputs:
   failStep:
     required: false
     description: 'Fail the step if the PR is not found or merged'
-    default: 'false'
+    default: 'true'
   labels:
     required: false
     description: 'Comma seperated labes that target pull request should have'
