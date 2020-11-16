@@ -10,9 +10,9 @@ async function run(): Promise<void> {
       checkStatus: core.getInput('checkStatus') === 'true',
       comment: core.getInput('comment'),
       ignoreLabels:
-        core.getInput('labels') === ''
+        core.getInput('ignoreLabels') === ''
           ? []
-          : core.getInput('labels').split(','),
+          : core.getInput('ignoreLabels').split(','),
       failStep: core.getInput('failStep') === 'true',
       intervalSeconds: Number(core.getInput('intervalSeconds')) * 1000,
       labels:

@@ -46,9 +46,9 @@ function run() {
             const inputs = {
                 checkStatus: core.getInput('checkStatus') === 'true',
                 comment: core.getInput('comment'),
-                ignoreLabels: core.getInput('labels') === ''
+                ignoreLabels: core.getInput('ignoreLabels') === ''
                     ? []
-                    : core.getInput('labels').split(','),
+                    : core.getInput('ignoreLabels').split(','),
                 failStep: core.getInput('failStep') === 'true',
                 intervalSeconds: Number(core.getInput('intervalSeconds')) * 1000,
                 labels: core.getInput('labels') === ''
@@ -142,9 +142,11 @@ class Merger {
                             if (!this.cfg.labels.every(needLabel => pr.labels.find(label => label.name === needLabel))) {
                                 throw new Error(`Needed Label not included in this pull request`);
                             }
-                            if (pr.labels.some(label => this.cfg.labels.includes(label.name))) {
-                                throw new Error(`This pull request contains labels that should be ignored`);
+                            core.debug(`Pull request has all need labels`);
+                            if (!pr.labels.every(label => !this.cfg.ignoreLabels.includes(label.name))) {
+                                throw new Error(`This pull request contains labels that should be ignored, labels:${util_1.inspect(pr.labels.map(l => l.name))}`);
                             }
+                            core.debug(`Pull request doesn't have ignore labels`);
                         }
                         if (this.cfg.checkStatus) {
                             const { data: checks } = yield client.checks.listForRef({
@@ -168,13 +170,14 @@ class Merger {
                     }
                 }));
                 if (this.cfg.comment) {
-                    yield client.issues.createComment({
+                    const { data: resp } = yield client.issues.createComment({
                         owner: this.cfg.owner,
                         repo: this.cfg.repo,
                         issue_number: this.cfg.pullRequestNumber,
                         body: this.cfg.comment
                     });
                     core.debug(`Post comment ${util_1.inspect(this.cfg.comment)}`);
+                    core.setOutput(`commentID`, resp.id);
                 }
                 yield client.pulls.merge({
                     owner,
