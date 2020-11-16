@@ -14,9 +14,12 @@ export interface Inputs {
   owner: string
   pullRequestNumber: number
   sha: string
+  strategy: Strategy
   token: string
   timeoutSeconds: number
 }
+
+export type Strategy = 'merge' | 'squash' | 'rebase'
 
 export class Merger {
   private retry: Retry
@@ -106,7 +109,8 @@ export class Merger {
       await client.pulls.merge({
         owner,
         repo,
-        pull_number: this.cfg.pullRequestNumber
+        pull_number: this.cfg.pullRequestNumber,
+        merge_method: this.cfg.strategy
       })
     } catch (err) {
       core.debug(`Error on retry error:${inspect(err)}`)
