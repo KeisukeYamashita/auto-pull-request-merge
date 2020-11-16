@@ -58,6 +58,7 @@ function run() {
                 repo,
                 pullRequestNumber: Number(core.getInput('pullRequestNumber')),
                 sha: core.getInput('sha'),
+                strategy: core.getInput('strategy'),
                 token: core.getInput('token'),
                 timeoutSeconds: Number(core.getInput('timeoutSeconds'))
             };
@@ -181,7 +182,8 @@ class Merger {
                 yield client.pulls.merge({
                     owner,
                     repo,
-                    pull_number: this.cfg.pullRequestNumber
+                    pull_number: this.cfg.pullRequestNumber,
+                    merge_method: this.cfg.strategy
                 });
             }
             catch (err) {

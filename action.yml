@@ -38,6 +38,10 @@ inputs:
     required: false
     description: 'SHA of the pull request commit'
     default: ${{ github.event.pull_request.head.sha }}
+  strategy:
+    required: false
+    description: 'Merge strategy'
+    default: 'merge'
   timeoutSeconds:
     required: false
     description: 'Seconds to timeout'

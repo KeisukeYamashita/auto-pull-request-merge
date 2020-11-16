@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import {Inputs, Merger} from './merger'
+import {Inputs, Merger, Strategy} from './merger'
 import {inspect} from 'util'
 
 async function run(): Promise<void> {
@@ -23,6 +23,7 @@ async function run(): Promise<void> {
       repo,
       pullRequestNumber: Number(core.getInput('pullRequestNumber')),
       sha: core.getInput('sha'),
+      strategy: core.getInput('strategy') as Strategy,
       token: core.getInput('token'),
       timeoutSeconds: Number(core.getInput('timeoutSeconds'))
     }
