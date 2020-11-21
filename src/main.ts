@@ -14,18 +14,21 @@ async function run(): Promise<void> {
           ? []
           : core.getInput('ignoreLabels').split(','),
       failStep: core.getInput('failStep') === 'true',
-      intervalSeconds: Number(core.getInput('intervalSeconds')) * 1000,
+      intervalSeconds:
+        Number(core.getInput('intervalSeconds', {required: true})) * 1000,
       labels:
         core.getInput('labels') === ''
           ? []
           : core.getInput('labels').split(','),
       owner,
       repo,
-      pullRequestNumber: Number(core.getInput('pullRequestNumber')),
-      sha: core.getInput('sha'),
-      strategy: core.getInput('strategy') as Strategy,
-      token: core.getInput('token'),
-      timeoutSeconds: Number(core.getInput('timeoutSeconds'))
+      pullRequestNumber: Number(
+        core.getInput('pullRequestNumber', {required: true})
+      ),
+      sha: core.getInput('sha', {required: true}),
+      strategy: core.getInput('strategy', {required: true}) as Strategy,
+      token: core.getInput('token', {required: true}),
+      timeoutSeconds: Number(core.getInput('timeoutSeconds', {required: true}))
     }
 
     core.debug(`Inputs: ${inspect(inputs)}`)
