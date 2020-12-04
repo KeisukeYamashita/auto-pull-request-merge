@@ -27,7 +27,7 @@
     "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
     "@octokit/types": "^6.0.3",
-    "@octokit/webhooks": "^7.15.1",
+    "@octokit/webhooks": "^7.16.0",
     "dayjs": "^1.9.6"
   },
   "devDependencies": {
