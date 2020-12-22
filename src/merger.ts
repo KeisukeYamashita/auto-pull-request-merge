@@ -120,7 +120,7 @@ export class Merger {
         pull_number: this.cfg.pullRequestNumber,
         merge_method: this.cfg.strategy
       })
-      core.setOutput("merged", true)
+      core.setOutput('merged', true)
     } catch (err) {
       core.debug(`Error on retry error:${inspect(err)}`)
       if (this.cfg.failStep) {
