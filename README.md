@@ -54,6 +54,7 @@ jobs:
 | Name | Description | 
 | --- | --- | 
 | `commentID` | ID of the comment if you specify `comment` in input | 
+| `merged`    | If the PR has merged or not                         |
 
 ### Disclaimer
 
