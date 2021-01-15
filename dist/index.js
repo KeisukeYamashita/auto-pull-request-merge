@@ -189,7 +189,7 @@ class Merger {
                         if (this.cfg.labels.length) {
                             const labelResult = this.isLabelsValid(pr, this.cfg.labels, this.cfg.labelsStrategy, 'labels');
                             if (labelResult.failed) {
-                                throw new Error(labelResult.message);
+                                throw new Error(`Checked labels failed: ${labelResult.message}`);
                             }
                             core.debug(`Checked labels and passed with message:${labelResult.message} with ${this.cfg.labelsStrategy}`);
                             core.info(`Checked labels and passed with ignoreLabels:${util_1.inspect(this.cfg.labels)}`);
@@ -197,7 +197,7 @@ class Merger {
                         if (this.cfg.ignoreLabels.length) {
                             const ignoreLabelResult = this.isLabelsValid(pr, this.cfg.ignoreLabels, this.cfg.ignoreLabelsStrategy, 'ignoreLabels');
                             if (ignoreLabelResult.failed) {
-                                throw new Error(ignoreLabelResult.message);
+                                throw new Error(`Checked ignore labels failed: ${ignoreLabelResult.message}`);
                             }
                             core.debug(`Checked ignore labels and passed with message:${ignoreLabelResult.message} with ${this.cfg.ignoreLabelsStrategy} strategy`);
                             core.info(`Checked ignore labels and passed with ignoreLabels:${util_1.inspect(this.cfg.ignoreLabels)}`);

@@ -137,7 +137,7 @@ export class Merger {
                 'labels'
               )
               if (labelResult.failed) {
-                throw new Error(labelResult.message)
+                throw new Error(`Checked labels failed: ${labelResult.message}`)
               }
 
               core.debug(
@@ -158,7 +158,9 @@ export class Merger {
                 'ignoreLabels'
               )
               if (ignoreLabelResult.failed) {
-                throw new Error(ignoreLabelResult.message)
+                throw new Error(
+                  `Checked ignore labels failed: ${ignoreLabelResult.message}`
+                )
               }
 
               core.debug(
