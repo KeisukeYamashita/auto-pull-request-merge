@@ -62,9 +62,11 @@ export class Merger {
     }
 
     core.debug(
-      `checked all labels for type:${type} and halLabels:${inspect(
-        hasLabels.length
-      )}, prs:${inspect(labels)} and failed: ${failed}`
+      `checked all labels for type:${type} and prLabels:${inspect(
+        pr.labels.map(l => l.name)
+      )}, hasLabels:${inspect(hasLabels)}, prs:${inspect(
+        labels
+      )} and failed: ${failed}`
     )
 
     return {
@@ -97,9 +99,11 @@ export class Merger {
     }
 
     core.debug(
-      `checked all labels for type:${type} and halLabels:${inspect(
-        hasLabels.length
-      )}, prs:${inspect(labels)} and failed: ${failed}`
+      `checked all labels for type:${type} and prLabels:${inspect(
+        pr.labels.map(l => l.name)
+      )}, hasLabels:${inspect(hasLabels)}, prs:${inspect(
+        labels
+      )} and failed: ${failed}`
     )
 
     return {
