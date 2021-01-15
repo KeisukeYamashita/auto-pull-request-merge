@@ -9,5 +9,5 @@ jobs:
       - uses: ./
         with:
           intervalSeconds: 1
-          timeoutSeconds: 60
+          timeoutSeconds: 30
           ignoreLabels: 'ignore'
