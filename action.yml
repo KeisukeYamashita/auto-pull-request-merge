@@ -22,10 +22,18 @@ inputs:
     required: false
     description: 'Comma seperated labes that target pull request should have'
     default: ''
+  labelsStrategy:
+    required: false
+    description: 'Check condition on how to check the labels'
+    default : 'all'
   ignoreLabels:
     required: false
     description: 'Comma seperated labes that target pull request should not have'
     default: ''
+  ignoreLabelsStrategy:
+    required: false
+    description: 'Check condition on how to check the labels'
+    default: 'all'
   repository:
     required: false
     description: 'The GitHub repository containing the issue or pr.'

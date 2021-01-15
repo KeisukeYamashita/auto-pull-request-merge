@@ -26,7 +26,8 @@
   "dependencies": {
     "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
-    "@octokit/types": "^6.1.2",
+    "@octokit/rest": "^18.0.12",
+    "@octokit/types": "^6.3.0",
     "@octokit/webhooks": "^7.21.0",
     "dayjs": "^1.9.7",
     "node-notifier": ">=8.0.1"
