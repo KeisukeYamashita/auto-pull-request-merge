@@ -135,11 +135,6 @@ class Merger {
             labels.includes(prLabel.name);
         })
             .map(label => label.name);
-        const hasNotLabels = pr.labels
-            .filter(prLabel => {
-            !labels.includes(prLabel.name);
-        })
-            .map(label => label.name);
         let failed = true;
         if (type === 'labels' && hasLabels.length === labels.length) {
             failed = false;
@@ -149,18 +144,13 @@ class Merger {
         }
         return {
             failed,
-            message: `PR ${pr.id} ${type === 'labels' ? '' : 'does\'t'} contains all ${util_1.inspect(labels)} for PR labels ${util_1.inspect(type === 'labels' ? hasLabels : hasNotLabels)}`
+            message: `PR ${pr.id} ${type === 'labels' ? '' : "does't"} contains all ${util_1.inspect(labels)} for PR labels ${util_1.inspect(pr.labels.map(l => l.name))}`
         };
     }
     isAtLeastOneLabelsValid(pr, labels, type) {
         const hasLabels = pr.labels
             .filter(prLabel => {
             labels.includes(prLabel.name);
-        })
-            .map(label => label.name);
-        const hasNotLabels = pr.labels
-            .filter(prLabel => {
-            !labels.includes(prLabel.name);
         })
             .map(label => label.name);
         let failed = true;
@@ -172,7 +162,7 @@ class Merger {
         }
         return {
             failed,
-            message: `PR ${pr.id} ${type === 'labels' ? '' : 'does\'t'} contains ${util_1.inspect(labels)} for PR labels ${util_1.inspect(type === 'labels' ? hasLabels : hasNotLabels)}`
+            message: `PR ${pr.id} ${type === 'labels' ? '' : "does't"} contains ${util_1.inspect(labels)} for PR labels ${util_1.inspect(pr.labels.map(l => l.name))}`
         };
     }
     isLabelsValid(pr, labels, strategy, type) {

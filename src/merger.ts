@@ -53,12 +53,6 @@ export class Merger {
       })
       .map(label => label.name)
 
-    const hasNotLabels = pr.labels
-      .filter(prLabel => {
-        !labels.includes(prLabel.name)
-      })
-      .map(label => label.name)
-
     let failed = true
     if (type === 'labels' && hasLabels.length === labels.length) {
       failed = false
@@ -72,7 +66,7 @@ export class Merger {
       message: `PR ${pr.id} ${
         type === 'labels' ? '' : "does't"
       } contains all ${inspect(labels)} for PR labels ${inspect(
-        type === 'labels' ? hasLabels : hasNotLabels
+        pr.labels.map(l => l.name)
       )}`
     }
   }
@@ -85,12 +79,6 @@ export class Merger {
     const hasLabels = pr.labels
       .filter(prLabel => {
         labels.includes(prLabel.name)
-      })
-      .map(label => label.name)
-
-    const hasNotLabels = pr.labels
-      .filter(prLabel => {
-        !labels.includes(prLabel.name)
       })
       .map(label => label.name)
 
@@ -107,7 +95,7 @@ export class Merger {
       message: `PR ${pr.id} ${
         type === 'labels' ? '' : "does't"
       } contains ${inspect(labels)} for PR labels ${inspect(
-        type === 'labels' ? hasLabels : hasNotLabels
+        pr.labels.map(l => l.name)
       )}`
     }
   }
