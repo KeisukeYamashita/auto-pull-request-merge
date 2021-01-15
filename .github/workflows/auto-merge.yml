@@ -11,6 +11,7 @@ jobs:
         with:
           intervalSeconds: 1
           timeoutSeconds: 30
+          dryRun: true
           ignoreLabels: 'ignore'
       - name: Create Comment
         uses: KeisukeYamashita/create-comment@v1
