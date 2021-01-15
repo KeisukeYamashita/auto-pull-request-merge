@@ -1,14 +1,10 @@
 name: 'build-test'
-on:
-  push:
-  pull_request:
+on: [pull_request]
 
 jobs:
   build: # make sure build/ci work properly
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: |
-          npm install
-      - run: |
-          npm run all
+      - run: npm install
+      - run: npm run all

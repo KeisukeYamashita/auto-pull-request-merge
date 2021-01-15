@@ -7,6 +7,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./
+        id: merge
         with:
           intervalSeconds: 1
           timeoutSeconds: 60
+          labels: need,need2
+          ignoreLabels: ignore
+      - name: Create Comment
+        uses: KeisukeYamashita/create-comment@v1
+        with:
+          comment: ${{ steps.merge.outputs.merged }}

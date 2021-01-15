@@ -46,14 +46,17 @@ function run() {
             const inputs = {
                 checkStatus: core.getInput('checkStatus') === 'true',
                 comment: core.getInput('comment'),
+                dryRun: core.getInput('dryRun') === 'true',
                 ignoreLabels: core.getInput('ignoreLabels') === ''
                     ? []
                     : core.getInput('ignoreLabels').split(','),
+                ignoreLabelsStrategy: core.getInput('labelsStrategy'),
                 failStep: core.getInput('failStep') === 'true',
                 intervalSeconds: Number(core.getInput('intervalSeconds', { required: true })) * 1000,
                 labels: core.getInput('labels') === ''
                     ? []
                     : core.getInput('labels').split(','),
+                labelsStrategy: core.getInput('labelsStrategy'),
                 owner,
                 repo,
                 pullRequestNumber: Number(core.getInput('pullRequestNumber', { required: true })),
@@ -126,6 +129,53 @@ class Merger {
             .interval(this.cfg.intervalSeconds)
             .failStep(this.cfg.failStep);
     }
+    isAllLabelsValid(pr, labels, type) {
+        const hasLabels = pr.labels
+            .filter(prLabel => {
+            return labels.includes(prLabel.name);
+        })
+            .map(label => label.name);
+        let failed = true;
+        if (type === 'labels' && hasLabels.length === labels.length) {
+            failed = false;
+        }
+        if (type === 'ignoreLabels' && !hasLabels.length) {
+            failed = false;
+        }
+        core.debug(`checked all labels for type:${type} and prLabels:${util_1.inspect(pr.labels.map(l => l.name))}, hasLabels:${util_1.inspect(hasLabels)}, labels:${util_1.inspect(labels)} and failed: ${failed}`);
+        return {
+            failed,
+            message: `PR ${pr.id} ${type === 'labels' ? '' : "does't"} contains all ${util_1.inspect(labels)} for PR labels ${util_1.inspect(pr.labels.map(l => l.name))}`
+        };
+    }
+    isAtLeastOneLabelsValid(pr, labels, type) {
+        const hasLabels = pr.labels
+            .filter(prLabel => {
+            return labels.includes(prLabel.name);
+        })
+            .map(label => label.name);
+        let failed = true;
+        if (type === 'labels' && hasLabels.length) {
+            failed = false;
+        }
+        if (type === 'ignoreLabels' && hasLabels.length) {
+            failed = false;
+        }
+        core.debug(`checked all labels for type:${type} and prLabels:${util_1.inspect(pr.labels.map(l => l.name))}, hasLabels:${util_1.inspect(hasLabels)}, labels:${util_1.inspect(labels)} and failed: ${failed}`);
+        return {
+            failed,
+            message: `PR ${pr.id} ${type === 'labels' ? '' : "does't"} contains ${util_1.inspect(labels)} for PR labels ${util_1.inspect(pr.labels.map(l => l.name))}`
+        };
+    }
+    isLabelsValid(pr, labels, strategy, type) {
+        switch (strategy) {
+            case 'atLeastOne':
+                return this.isAtLeastOneLabelsValid(pr, labels, type);
+            case 'all':
+            default:
+                return this.isAllLabelsValid(pr, labels, type);
+        }
+    }
     merge() {
         return __awaiter(this, void 0, void 0, function* () {
             const client = github.getOctokit(this.cfg.token);
@@ -138,15 +188,21 @@ class Merger {
                             repo,
                             pull_number: this.cfg.pullRequestNumber
                         });
-                        if (this.cfg.labels.length > 0) {
-                            if (!this.cfg.labels.every(needLabel => pr.labels.find(label => label.name === needLabel))) {
-                                throw new Error(`Needed Label not included in this pull request`);
+                        if (this.cfg.labels.length) {
+                            const labelResult = this.isLabelsValid(pr, this.cfg.labels, this.cfg.labelsStrategy, 'labels');
+                            if (labelResult.failed) {
+                                throw new Error(`Checked labels failed: ${labelResult.message}`);
                             }
-                            core.debug(`Pull request has all need labels`);
-                            if (!pr.labels.every(label => !this.cfg.ignoreLabels.includes(label.name))) {
-                                throw new Error(`This pull request contains labels that should be ignored, labels:${util_1.inspect(pr.labels.map(l => l.name))}`);
+                            core.debug(`Checked labels and passed with message:${labelResult.message} with ${this.cfg.labelsStrategy}`);
+                            core.info(`Checked labels and passed with ignoreLabels:${util_1.inspect(this.cfg.labels)}`);
+                        }
+                        if (this.cfg.ignoreLabels.length) {
+                            const ignoreLabelResult = this.isLabelsValid(pr, this.cfg.ignoreLabels, this.cfg.ignoreLabelsStrategy, 'ignoreLabels');
+                            if (ignoreLabelResult.failed) {
+                                throw new Error(`Checked ignore labels failed: ${ignoreLabelResult.message}`);
                             }
-                            core.debug(`Pull request doesn't have ignore labels`);
+                            core.debug(`Checked ignore labels and passed with message:${ignoreLabelResult.message} with ${this.cfg.ignoreLabelsStrategy} strategy`);
+                            core.info(`Checked ignore labels and passed with ignoreLabels:${util_1.inspect(this.cfg.ignoreLabels)}`);
                         }
                         if (this.cfg.checkStatus) {
                             const { data: checks } = yield client.checks.listForRef({
@@ -158,7 +214,7 @@ class Merger {
                             const totalSuccessStatuses = checks.check_runs.filter(check => check.conclusion === 'success' ||
                                 check.conclusion === 'skipped').length;
                             if (totalStatus - 1 !== totalSuccessStatuses) {
-                                throw new Error(`Not all status success, ${totalSuccessStatuses} out of ${totalStatus} success`);
+                                throw new Error(`Not all status success, ${totalSuccessStatuses} out of ${totalStatus - 1} (ignored this check) success`);
                             }
                             core.debug(`All ${totalStatus} status success`);
                             core.debug(`Merge PR ${pr.number}`);
@@ -179,13 +235,19 @@ class Merger {
                     core.debug(`Post comment ${util_1.inspect(this.cfg.comment)}`);
                     core.setOutput(`commentID`, resp.id);
                 }
-                yield client.pulls.merge({
-                    owner,
-                    repo,
-                    pull_number: this.cfg.pullRequestNumber,
-                    merge_method: this.cfg.strategy
-                });
-                core.setOutput("merged", true);
+                if (!this.cfg.dryRun) {
+                    yield client.pulls.merge({
+                        owner,
+                        repo,
+                        pull_number: this.cfg.pullRequestNumber,
+                        merge_method: this.cfg.strategy
+                    });
+                    core.setOutput('merged', true);
+                }
+                else {
+                    core.info(`dry run merge action`);
+                    core.setOutput('merged', false);
+                }
             }
             catch (err) {
                 core.debug(`Error on retry error:${util_1.inspect(err)}`);

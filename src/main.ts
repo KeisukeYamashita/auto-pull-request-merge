@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import {Inputs, Merger, Strategy} from './merger'
+import {Inputs, Merger, Strategy, labelStrategies} from './merger'
 import {inspect} from 'util'
 
 async function run(): Promise<void> {
@@ -9,10 +9,12 @@ async function run(): Promise<void> {
     const inputs: Inputs = {
       checkStatus: core.getInput('checkStatus') === 'true',
       comment: core.getInput('comment'),
+      dryRun: core.getInput('dryRun') === 'true',
       ignoreLabels:
         core.getInput('ignoreLabels') === ''
           ? []
           : core.getInput('ignoreLabels').split(','),
+      ignoreLabelsStrategy: core.getInput('labelsStrategy') as labelStrategies,
       failStep: core.getInput('failStep') === 'true',
       intervalSeconds:
         Number(core.getInput('intervalSeconds', {required: true})) * 1000,
@@ -20,6 +22,7 @@ async function run(): Promise<void> {
         core.getInput('labels') === ''
           ? []
           : core.getInput('labels').split(','),
+      labelsStrategy: core.getInput('labelsStrategy') as labelStrategies,
       owner,
       repo,
       pullRequestNumber: Number(

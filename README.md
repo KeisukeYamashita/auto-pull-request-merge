@@ -38,9 +38,12 @@ jobs:
 | --- | --- | --- |
 | `checkStatus` | Check all status before merge' | `true` |
 | `comment` | Comments to post before merging the pull request | - |
+| `dryRun` | Dry run the merge or not | `false` |
 | `failStep` | Fail the step if no PR has merged | `true` |  
 | `ignoreLabels` | Label that the target pull request shouldn't have | - |
+| `ignoreLabelsStrategy` | Check condition on how to check the labels (Options are `all`, `atLeastOne`). | `all` |
 | `labels` | Label that the target pull request should have | - |
+| `labelsStrategy` | Check condition on how to check the labels (Options are `all`, `atLeastOne`). | `all` |
 | `intervalSeconds` | Seconds between the check | `0.1` | 
 | `repostiory` | The GitHub repository containing the pull request | Current repository | 
 | `pullRequestNumber` | The number of the pull request. | `github.event.pull_request.number` |
