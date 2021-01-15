@@ -3,13 +3,17 @@ import * as core from '@actions/core'
 import Retry from './retry'
 import {inspect} from 'util'
 
+export type labelStrategies = 'all' | 'atLeastOne'
+
 export interface Inputs {
   checkStatus: boolean
   comment: string
   ignoreLabels: string[]
+  ignoreLabelsStrategy: labelStrategies
   failStep: boolean
   intervalSeconds: number
   labels: string[]
+  labelsStrategy: labelStrategies
   repo: string
   owner: string
   pullRequestNumber: number
@@ -30,7 +34,7 @@ export class Merger {
       .interval(this.cfg.intervalSeconds)
       .failStep(this.cfg.failStep)
   }
-
+  
   async merge(): Promise<void> {
     const client = github.getOctokit(this.cfg.token)
     const {owner, repo} = this.cfg
@@ -39,7 +43,7 @@ export class Merger {
       await this.retry.exec(
         async (count): Promise<void> => {
           try {
-            const {data: pr} = await client.pulls.get({
+            const {data:pr} = await client.pulls.get({
               owner,
               repo,
               pull_number: this.cfg.pullRequestNumber
@@ -55,7 +59,7 @@ export class Merger {
                   `Needed Label not included in this pull request`
                 )
               }
-              core.debug(`Pull request has all need labels`)
+                core.debug(`Pull request has all need labels`)
 
               if (
                 !pr.labels.every(
