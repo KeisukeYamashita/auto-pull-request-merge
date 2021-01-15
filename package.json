@@ -1,6 +1,6 @@
 {
   "name": "auto-pull-request-merge",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "Merge PR automatically",
   "main": "lib/main.js",
   "scripts": {
