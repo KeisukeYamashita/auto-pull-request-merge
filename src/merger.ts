@@ -46,17 +46,17 @@ export class Merger {
     labels: string[],
     type: 'labels' | 'ignoreLabels'
   ): ValidationResult {
-    const hasLabelsCount = pr.labels
+    const hasLabels = pr.labels
       .filter(prLabel => {
         labels.includes(prLabel.name)
       })
       .map(label => label.name)
 
     let status = true
-    if (type === 'labels' && hasLabelsCount.length === labels.length) {
+    if (type === 'labels' && hasLabels.length === labels.length) {
       status = false
     }
-    if (type === 'ignoreLabels' && hasLabelsCount.length) {
+    if (type === 'ignoreLabels' && hasLabels.length) {
       status = false
     }
 
@@ -64,7 +64,7 @@ export class Merger {
       status,
       message: `PR ${pr.id} ${
         type === 'ignoreLabels' ? "does't" : ''
-      } contains all ${inspect(hasLabelsCount)}`
+      } contains all ${inspect(hasLabels)}`
     }
   }
 
@@ -73,17 +73,17 @@ export class Merger {
     labels: string[],
     type: 'labels' | 'ignoreLabels'
   ): ValidationResult {
-    const hasLabelsCount = pr.labels
+    const hasLabels = pr.labels
       .filter(prLabel => {
         labels.includes(prLabel.name)
       })
       .map(label => label.name)
 
     let status = true
-    if (type === 'labels' && hasLabelsCount.length) {
+    if (type === 'labels' && hasLabels.length) {
       status = false
     }
-    if (type === 'ignoreLabels' && hasLabelsCount.length) {
+    if (type === 'ignoreLabels' && hasLabels.length) {
       status = false
     }
 
@@ -91,7 +91,7 @@ export class Merger {
       status,
       message: `PR ${pr.id} ${
         type === 'ignoreLabels' ? "does't" : ''
-      } contains all ${inspect(hasLabelsCount)}`
+      } contains ${inspect(hasLabels)}`
     }
   }
 
@@ -134,6 +134,8 @@ export class Merger {
               if (!labelResult.status) {
                 throw new Error(labelResult.message)
               }
+
+              core.debug(labelResult.message)
             }
 
             if (this.cfg.ignoreLabels.length > 0) {
@@ -146,6 +148,8 @@ export class Merger {
               if (!ignoreLabelResult.status) {
                 throw new Error(ignoreLabelResult.message)
               }
+
+              core.debug(ignoreLabelResult.message)
             }
 
             if (this.cfg.checkStatus) {
@@ -164,7 +168,9 @@ export class Merger {
 
               if (totalStatus - 1 !== totalSuccessStatuses) {
                 throw new Error(
-                  `Not all status success, ${totalSuccessStatuses} out of ${totalStatus} success`
+                  `Not all status success, ${totalSuccessStatuses} out of ${
+                    totalStatus - 1
+                  } (ignored this check) success`
                 )
               }
 

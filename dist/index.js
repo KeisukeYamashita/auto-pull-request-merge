@@ -129,39 +129,39 @@ class Merger {
             .failStep(this.cfg.failStep);
     }
     isAllLabelsValid(pr, labels, type) {
-        const hasLabelsCount = pr.labels
+        const hasLabels = pr.labels
             .filter(prLabel => {
             labels.includes(prLabel.name);
         })
             .map(label => label.name);
         let status = true;
-        if (type === 'labels' && hasLabelsCount.length === labels.length) {
+        if (type === 'labels' && hasLabels.length === labels.length) {
             status = false;
         }
-        if (type === 'ignoreLabels' && hasLabelsCount.length) {
+        if (type === 'ignoreLabels' && hasLabels.length) {
             status = false;
         }
         return {
             status,
-            message: `PR ${pr.id} ${type === 'ignoreLabels' ? "does't" : ''} contains all ${util_1.inspect(hasLabelsCount)}`
+            message: `PR ${pr.id} ${type === 'ignoreLabels' ? "does't" : ''} contains all ${util_1.inspect(hasLabels)}`
         };
     }
     isAtLeastOneLabelsValid(pr, labels, type) {
-        const hasLabelsCount = pr.labels
+        const hasLabels = pr.labels
             .filter(prLabel => {
             labels.includes(prLabel.name);
         })
             .map(label => label.name);
         let status = true;
-        if (type === 'labels' && hasLabelsCount.length) {
+        if (type === 'labels' && hasLabels.length) {
             status = false;
         }
-        if (type === 'ignoreLabels' && hasLabelsCount.length) {
+        if (type === 'ignoreLabels' && hasLabels.length) {
             status = false;
         }
         return {
             status,
-            message: `PR ${pr.id} ${type === 'ignoreLabels' ? "does't" : ''} contains all ${util_1.inspect(hasLabelsCount)}`
+            message: `PR ${pr.id} ${type === 'ignoreLabels' ? "does't" : ''} contains ${util_1.inspect(hasLabels)}`
         };
     }
     isLabelsValid(pr, labels, strategy, type) {
@@ -190,12 +190,14 @@ class Merger {
                             if (!labelResult.status) {
                                 throw new Error(labelResult.message);
                             }
+                            core.debug(labelResult.message);
                         }
                         if (this.cfg.ignoreLabels.length > 0) {
                             const ignoreLabelResult = this.isLabelsValid(pr, this.cfg.labels, this.cfg.labelsStrategy, 'ignoreLabels');
                             if (!ignoreLabelResult.status) {
                                 throw new Error(ignoreLabelResult.message);
                             }
+                            core.debug(ignoreLabelResult.message);
                         }
                         if (this.cfg.checkStatus) {
                             const { data: checks } = yield client.checks.listForRef({
@@ -207,7 +209,7 @@ class Merger {
                             const totalSuccessStatuses = checks.check_runs.filter(check => check.conclusion === 'success' ||
                                 check.conclusion === 'skipped').length;
                             if (totalStatus - 1 !== totalSuccessStatuses) {
-                                throw new Error(`Not all status success, ${totalSuccessStatuses} out of ${totalStatus} success`);
+                                throw new Error(`Not all status success, ${totalSuccessStatuses} out of ${totalStatus - 1} (ignored this check) success`);
                             }
                             core.debug(`All ${totalStatus} status success`);
                             core.debug(`Merge PR ${pr.number}`);
