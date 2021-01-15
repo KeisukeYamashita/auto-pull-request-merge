@@ -38,6 +38,7 @@ jobs:
 | --- | --- | --- |
 | `checkStatus` | Check all status before merge' | `true` |
 | `comment` | Comments to post before merging the pull request | - |
+| `dryRun` | Dry run the merge or not | `false` |
 | `failStep` | Fail the step if no PR has merged | `true` |  
 | `ignoreLabels` | Label that the target pull request shouldn't have | - |
 | `ignoreLabelsStrategy` | Check condition on how to check the labels (Options are `all`, `atLeastOne`). | `all` |

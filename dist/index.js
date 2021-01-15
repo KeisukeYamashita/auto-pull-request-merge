@@ -46,6 +46,7 @@ function run() {
             const inputs = {
                 checkStatus: core.getInput('checkStatus') === 'true',
                 comment: core.getInput('comment'),
+                dryRun: core.getInput('dryRun') === 'true',
                 ignoreLabels: core.getInput('ignoreLabels') === ''
                     ? []
                     : core.getInput('ignoreLabels').split(','),
@@ -134,15 +135,15 @@ class Merger {
             labels.includes(prLabel.name);
         })
             .map(label => label.name);
-        let status = true;
+        let failed = true;
         if (type === 'labels' && hasLabels.length === labels.length) {
-            status = false;
+            failed = false;
         }
-        if (type === 'ignoreLabels' && hasLabels.length) {
-            status = false;
+        if (type === 'ignoreLabels' && !hasLabels.length) {
+            failed = false;
         }
         return {
-            status,
+            failed,
             message: `PR ${pr.id} ${type === 'ignoreLabels' ? "does't" : ''} contains all ${util_1.inspect(labels)}`
         };
     }
@@ -152,16 +153,16 @@ class Merger {
             labels.includes(prLabel.name);
         })
             .map(label => label.name);
-        let status = true;
+        let failed = true;
         if (type === 'labels' && hasLabels.length) {
-            status = false;
+            failed = false;
         }
         if (type === 'ignoreLabels' && hasLabels.length) {
-            status = false;
+            failed = false;
         }
         return {
-            status,
-            message: `PR ${pr.id} ${type === 'ignoreLabels' ? "does't" : ''} contains ${labels}`
+            failed,
+            message: `PR ${pr.id} ${type === 'ignoreLabels' ? "does't" : ''} contains ${util_1.inspect(labels)}`
         };
     }
     isLabelsValid(pr, labels, strategy, type) {
@@ -187,14 +188,14 @@ class Merger {
                         });
                         if (this.cfg.labels.length) {
                             const labelResult = this.isLabelsValid(pr, this.cfg.labels, this.cfg.labelsStrategy, 'labels');
-                            if (!labelResult.status) {
+                            if (labelResult.failed) {
                                 throw new Error(labelResult.message);
                             }
                             core.debug(`Checked labels and passed with message:${labelResult.message} with ${this.cfg.labelsStrategy}`);
                         }
                         if (this.cfg.ignoreLabels.length) {
                             const ignoreLabelResult = this.isLabelsValid(pr, this.cfg.ignoreLabels, this.cfg.ignoreLabelsStrategy, 'ignoreLabels');
-                            if (!ignoreLabelResult.status) {
+                            if (ignoreLabelResult.failed) {
                                 throw new Error(ignoreLabelResult.message);
                             }
                             core.debug(`Checked ignore labels and passed with message:${ignoreLabelResult.message} with ${this.cfg.ignoreLabelsStrategy} strategy`);
@@ -230,13 +231,18 @@ class Merger {
                     core.debug(`Post comment ${util_1.inspect(this.cfg.comment)}`);
                     core.setOutput(`commentID`, resp.id);
                 }
-                yield client.pulls.merge({
-                    owner,
-                    repo,
-                    pull_number: this.cfg.pullRequestNumber,
-                    merge_method: this.cfg.strategy
-                });
-                core.setOutput('merged', true);
+                if (!this.cfg.dryRun) {
+                    yield client.pulls.merge({
+                        owner,
+                        repo,
+                        pull_number: this.cfg.pullRequestNumber,
+                        merge_method: this.cfg.strategy
+                    });
+                    core.setOutput('merged', true);
+                }
+                else {
+                    core.setOutput('merged', false);
+                }
             }
             catch (err) {
                 core.debug(`Error on retry error:${util_1.inspect(err)}`);

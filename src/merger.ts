@@ -9,6 +9,7 @@ export type labelStrategies = 'all' | 'atLeastOne'
 export interface Inputs {
   checkStatus: boolean
   comment: string
+  dryRun: boolean
   ignoreLabels: string[]
   ignoreLabelsStrategy: labelStrategies
   failStep: boolean
@@ -27,7 +28,7 @@ export interface Inputs {
 export type Strategy = 'merge' | 'squash' | 'rebase'
 
 interface ValidationResult {
-  status: boolean
+  failed: boolean
   message: string
 }
 
@@ -52,16 +53,16 @@ export class Merger {
       })
       .map(label => label.name)
 
-    let status = true
+    let failed = true
     if (type === 'labels' && hasLabels.length === labels.length) {
-      status = false
+      failed = false
     }
-    if (type === 'ignoreLabels' && hasLabels.length) {
-      status = false
+    if (type === 'ignoreLabels' && !hasLabels.length) {
+      failed = false
     }
 
     return {
-      status,
+      failed,
       message: `PR ${pr.id} ${
         type === 'ignoreLabels' ? "does't" : ''
       } contains all ${inspect(labels)}`
@@ -79,19 +80,19 @@ export class Merger {
       })
       .map(label => label.name)
 
-    let status = true
+    let failed = true
     if (type === 'labels' && hasLabels.length) {
-      status = false
+      failed = false
     }
     if (type === 'ignoreLabels' && hasLabels.length) {
-      status = false
+      failed = false
     }
 
     return {
-      status,
+      failed,
       message: `PR ${pr.id} ${
         type === 'ignoreLabels' ? "does't" : ''
-      } contains ${labels}`
+      } contains ${inspect(labels)}`
     }
   }
 
@@ -131,7 +132,7 @@ export class Merger {
                 this.cfg.labelsStrategy,
                 'labels'
               )
-              if (!labelResult.status) {
+              if (labelResult.failed) {
                 throw new Error(labelResult.message)
               }
 
@@ -147,7 +148,7 @@ export class Merger {
                 this.cfg.ignoreLabelsStrategy,
                 'ignoreLabels'
               )
-              if (!ignoreLabelResult.status) {
+              if (ignoreLabelResult.failed) {
                 throw new Error(ignoreLabelResult.message)
               }
 
@@ -200,13 +201,17 @@ export class Merger {
         core.setOutput(`commentID`, resp.id)
       }
 
-      await client.pulls.merge({
-        owner,
-        repo,
-        pull_number: this.cfg.pullRequestNumber,
-        merge_method: this.cfg.strategy
-      })
-      core.setOutput('merged', true)
+      if (!this.cfg.dryRun) {
+        await client.pulls.merge({
+          owner,
+          repo,
+          pull_number: this.cfg.pullRequestNumber,
+          merge_method: this.cfg.strategy
+        })
+        core.setOutput('merged', true)
+      } else {
+        core.setOutput('merged', false)
+      }
     } catch (err) {
       core.debug(`Error on retry error:${inspect(err)}`)
       if (this.cfg.failStep) {

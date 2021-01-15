@@ -9,6 +9,7 @@ async function run(): Promise<void> {
     const inputs: Inputs = {
       checkStatus: core.getInput('checkStatus') === 'true',
       comment: core.getInput('comment'),
+      dryRun: core.getInput('dryRun') === 'true',
       ignoreLabels:
         core.getInput('ignoreLabels') === ''
           ? []

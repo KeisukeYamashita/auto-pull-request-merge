@@ -10,6 +10,10 @@ inputs:
     required: false
     description: 'Comment before merge'
     default: ''
+  dryRun:
+    required: false
+    description: 'Dry run'
+    default: 'false'
   intervalSeconds:
     required: false
     description: 'Seconds between the check'
