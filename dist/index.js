@@ -132,7 +132,7 @@ class Merger {
     isAllLabelsValid(pr, labels, type) {
         const hasLabels = pr.labels
             .filter(prLabel => {
-            labels.includes(prLabel.name);
+            return labels.includes(prLabel.name);
         })
             .map(label => label.name);
         let failed = true;
@@ -142,7 +142,7 @@ class Merger {
         if (type === 'ignoreLabels' && !hasLabels.length) {
             failed = false;
         }
-        core.debug(`checked all labels for type:${type} and prLabels:${util_1.inspect(pr.labels.map(l => l.name))}, hasLabels:${util_1.inspect(hasLabels)}, prs:${util_1.inspect(labels)} and failed: ${failed}`);
+        core.debug(`checked all labels for type:${type} and prLabels:${util_1.inspect(pr.labels.map(l => l.name))}, hasLabels:${util_1.inspect(hasLabels)}, labels:${util_1.inspect(labels)} and failed: ${failed}`);
         return {
             failed,
             message: `PR ${pr.id} ${type === 'labels' ? '' : "does't"} contains all ${util_1.inspect(labels)} for PR labels ${util_1.inspect(pr.labels.map(l => l.name))}`
@@ -151,7 +151,7 @@ class Merger {
     isAtLeastOneLabelsValid(pr, labels, type) {
         const hasLabels = pr.labels
             .filter(prLabel => {
-            labels.includes(prLabel.name);
+            return labels.includes(prLabel.name);
         })
             .map(label => label.name);
         let failed = true;
@@ -161,7 +161,7 @@ class Merger {
         if (type === 'ignoreLabels' && hasLabels.length) {
             failed = false;
         }
-        core.debug(`checked all labels for type:${type} and prLabels:${util_1.inspect(pr.labels.map(l => l.name))}, hasLabels:${util_1.inspect(hasLabels)}, prs:${util_1.inspect(labels)} and failed: ${failed}`);
+        core.debug(`checked all labels for type:${type} and prLabels:${util_1.inspect(pr.labels.map(l => l.name))}, hasLabels:${util_1.inspect(hasLabels)}, labels:${util_1.inspect(labels)} and failed: ${failed}`);
         return {
             failed,
             message: `PR ${pr.id} ${type === 'labels' ? '' : "does't"} contains ${util_1.inspect(labels)} for PR labels ${util_1.inspect(pr.labels.map(l => l.name))}`

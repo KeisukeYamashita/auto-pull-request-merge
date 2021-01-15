@@ -49,7 +49,7 @@ export class Merger {
   ): ValidationResult {
     const hasLabels = pr.labels
       .filter(prLabel => {
-        labels.includes(prLabel.name)
+        return labels.includes(prLabel.name)
       })
       .map(label => label.name)
 
@@ -64,7 +64,7 @@ export class Merger {
     core.debug(
       `checked all labels for type:${type} and prLabels:${inspect(
         pr.labels.map(l => l.name)
-      )}, hasLabels:${inspect(hasLabels)}, prs:${inspect(
+      )}, hasLabels:${inspect(hasLabels)}, labels:${inspect(
         labels
       )} and failed: ${failed}`
     )
@@ -86,7 +86,7 @@ export class Merger {
   ): ValidationResult {
     const hasLabels = pr.labels
       .filter(prLabel => {
-        labels.includes(prLabel.name)
+        return labels.includes(prLabel.name)
       })
       .map(label => label.name)
 
@@ -101,7 +101,7 @@ export class Merger {
     core.debug(
       `checked all labels for type:${type} and prLabels:${inspect(
         pr.labels.map(l => l.name)
-      )}, hasLabels:${inspect(hasLabels)}, prs:${inspect(
+      )}, hasLabels:${inspect(hasLabels)}, labels:${inspect(
         labels
       )} and failed: ${failed}`
     )
