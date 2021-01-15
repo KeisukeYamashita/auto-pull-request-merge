@@ -64,7 +64,7 @@ export class Merger {
       status,
       message: `PR ${pr.id} ${
         type === 'ignoreLabels' ? "does't" : ''
-      } contains all ${inspect(hasLabels)}`
+      } contains all ${inspect(labels)}`
     }
   }
 
@@ -91,7 +91,7 @@ export class Merger {
       status,
       message: `PR ${pr.id} ${
         type === 'ignoreLabels' ? "does't" : ''
-      } contains ${inspect(hasLabels)}`
+      } contains ${labels}`
     }
   }
 
@@ -124,7 +124,7 @@ export class Merger {
               pull_number: this.cfg.pullRequestNumber
             })
 
-            if (this.cfg.labels.length > 0) {
+            if (this.cfg.labels.length) {
               const labelResult = this.isLabelsValid(
                 pr,
                 this.cfg.labels,
@@ -135,21 +135,25 @@ export class Merger {
                 throw new Error(labelResult.message)
               }
 
-              core.debug(labelResult.message)
+              core.debug(
+                `Checked labels and passed with message:${labelResult.message} with ${this.cfg.labelsStrategy}`
+              )
             }
 
-            if (this.cfg.ignoreLabels.length > 0) {
+            if (this.cfg.ignoreLabels.length) {
               const ignoreLabelResult = this.isLabelsValid(
                 pr,
-                this.cfg.labels,
-                this.cfg.labelsStrategy,
+                this.cfg.ignoreLabels,
+                this.cfg.ignoreLabelsStrategy,
                 'ignoreLabels'
               )
               if (!ignoreLabelResult.status) {
                 throw new Error(ignoreLabelResult.message)
               }
 
-              core.debug(ignoreLabelResult.message)
+              core.debug(
+                `Checked ignore labels and passed with message:${ignoreLabelResult.message} with ${this.cfg.ignoreLabelsStrategy} strategy`
+              )
             }
 
             if (this.cfg.checkStatus) {

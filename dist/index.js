@@ -143,7 +143,7 @@ class Merger {
         }
         return {
             status,
-            message: `PR ${pr.id} ${type === 'ignoreLabels' ? "does't" : ''} contains all ${util_1.inspect(hasLabels)}`
+            message: `PR ${pr.id} ${type === 'ignoreLabels' ? "does't" : ''} contains all ${util_1.inspect(labels)}`
         };
     }
     isAtLeastOneLabelsValid(pr, labels, type) {
@@ -161,7 +161,7 @@ class Merger {
         }
         return {
             status,
-            message: `PR ${pr.id} ${type === 'ignoreLabels' ? "does't" : ''} contains ${util_1.inspect(hasLabels)}`
+            message: `PR ${pr.id} ${type === 'ignoreLabels' ? "does't" : ''} contains ${labels}`
         };
     }
     isLabelsValid(pr, labels, strategy, type) {
@@ -185,19 +185,19 @@ class Merger {
                             repo,
                             pull_number: this.cfg.pullRequestNumber
                         });
-                        if (this.cfg.labels.length > 0) {
+                        if (this.cfg.labels.length) {
                             const labelResult = this.isLabelsValid(pr, this.cfg.labels, this.cfg.labelsStrategy, 'labels');
                             if (!labelResult.status) {
                                 throw new Error(labelResult.message);
                             }
-                            core.debug(labelResult.message);
+                            core.debug(`Checked labels and passed with message:${labelResult.message} with ${this.cfg.labelsStrategy}`);
                         }
-                        if (this.cfg.ignoreLabels.length > 0) {
-                            const ignoreLabelResult = this.isLabelsValid(pr, this.cfg.labels, this.cfg.labelsStrategy, 'ignoreLabels');
+                        if (this.cfg.ignoreLabels.length) {
+                            const ignoreLabelResult = this.isLabelsValid(pr, this.cfg.ignoreLabels, this.cfg.ignoreLabelsStrategy, 'ignoreLabels');
                             if (!ignoreLabelResult.status) {
                                 throw new Error(ignoreLabelResult.message);
                             }
-                            core.debug(ignoreLabelResult.message);
+                            core.debug(`Checked ignore labels and passed with message:${ignoreLabelResult.message} with ${this.cfg.ignoreLabelsStrategy} strategy`);
                         }
                         if (this.cfg.checkStatus) {
                             const { data: checks } = yield client.checks.listForRef({
