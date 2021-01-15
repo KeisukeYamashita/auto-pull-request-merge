@@ -142,6 +142,7 @@ class Merger {
         if (type === 'ignoreLabels' && !hasLabels.length) {
             failed = false;
         }
+        core.debug(`checked all labels for type:${type} and halLabels:${util_1.inspect(hasLabels.length)}, prs:${util_1.inspect(labels)} and failed: ${failed}`);
         return {
             failed,
             message: `PR ${pr.id} ${type === 'labels' ? '' : "does't"} contains all ${util_1.inspect(labels)} for PR labels ${util_1.inspect(pr.labels.map(l => l.name))}`
@@ -160,6 +161,7 @@ class Merger {
         if (type === 'ignoreLabels' && hasLabels.length) {
             failed = false;
         }
+        core.debug(`checked all labels for type:${type} and halLabels:${util_1.inspect(hasLabels.length)}, prs:${util_1.inspect(labels)} and failed: ${failed}`);
         return {
             failed,
             message: `PR ${pr.id} ${type === 'labels' ? '' : "does't"} contains ${util_1.inspect(labels)} for PR labels ${util_1.inspect(pr.labels.map(l => l.name))}`

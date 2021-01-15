@@ -61,6 +61,12 @@ export class Merger {
       failed = false
     }
 
+    core.debug(
+      `checked all labels for type:${type} and halLabels:${inspect(
+        hasLabels.length
+      )}, prs:${inspect(labels)} and failed: ${failed}`
+    )
+
     return {
       failed,
       message: `PR ${pr.id} ${
@@ -89,6 +95,12 @@ export class Merger {
     if (type === 'ignoreLabels' && hasLabels.length) {
       failed = false
     }
+
+    core.debug(
+      `checked all labels for type:${type} and halLabels:${inspect(
+        hasLabels.length
+      )}, prs:${inspect(labels)} and failed: ${failed}`
+    )
 
     return {
       failed,
