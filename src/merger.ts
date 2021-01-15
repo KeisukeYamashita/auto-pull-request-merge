@@ -1,5 +1,6 @@
 import * as github from '@actions/github'
 import * as core from '@actions/core'
+import {PullsGetResponseData} from '@octokit/types'
 import Retry from './retry'
 import {inspect} from 'util'
 
@@ -25,6 +26,11 @@ export interface Inputs {
 
 export type Strategy = 'merge' | 'squash' | 'rebase'
 
+interface ValidationResult {
+  status: boolean
+  message: string
+}
+
 export class Merger {
   private retry: Retry
 
@@ -34,7 +40,76 @@ export class Merger {
       .interval(this.cfg.intervalSeconds)
       .failStep(this.cfg.failStep)
   }
-  
+
+  private isAllLabelsValid(
+    pr: PullsGetResponseData,
+    labels: string[],
+    type: 'labels' | 'ignoreLabels'
+  ): ValidationResult {
+    const hasLabelsCount = pr.labels
+      .filter(prLabel => {
+        labels.includes(prLabel.name)
+      })
+      .map(label => label.name)
+
+    let status = true
+    if (type === 'labels' && hasLabelsCount.length === labels.length) {
+      status = false
+    }
+    if (type === 'ignoreLabels' && hasLabelsCount.length) {
+      status = false
+    }
+
+    return {
+      status,
+      message: `PR ${pr.id} ${
+        type === 'ignoreLabels' ? "does't" : ''
+      } contains all ${inspect(hasLabelsCount)}`
+    }
+  }
+
+  private isAtLeastOneLabelsValid(
+    pr: PullsGetResponseData,
+    labels: string[],
+    type: 'labels' | 'ignoreLabels'
+  ): ValidationResult {
+    const hasLabelsCount = pr.labels
+      .filter(prLabel => {
+        labels.includes(prLabel.name)
+      })
+      .map(label => label.name)
+
+    let status = true
+    if (type === 'labels' && hasLabelsCount.length) {
+      status = false
+    }
+    if (type === 'ignoreLabels' && hasLabelsCount.length) {
+      status = false
+    }
+
+    return {
+      status,
+      message: `PR ${pr.id} ${
+        type === 'ignoreLabels' ? "does't" : ''
+      } contains all ${inspect(hasLabelsCount)}`
+    }
+  }
+
+  private isLabelsValid(
+    pr: PullsGetResponseData,
+    labels: string[],
+    strategy: labelStrategies,
+    type: 'labels' | 'ignoreLabels'
+  ): ValidationResult {
+    switch (strategy) {
+      case 'atLeastOne':
+        return this.isAtLeastOneLabelsValid(pr, labels, type)
+      case 'all':
+      default:
+        return this.isAllLabelsValid(pr, labels, type)
+    }
+  }
+
   async merge(): Promise<void> {
     const client = github.getOctokit(this.cfg.token)
     const {owner, repo} = this.cfg
@@ -43,37 +118,34 @@ export class Merger {
       await this.retry.exec(
         async (count): Promise<void> => {
           try {
-            const {data:pr} = await client.pulls.get({
+            const {data: pr} = await client.pulls.get({
               owner,
               repo,
               pull_number: this.cfg.pullRequestNumber
             })
 
             if (this.cfg.labels.length > 0) {
-              if (
-                !this.cfg.labels.every(needLabel =>
-                  pr.labels.find(label => label.name === needLabel)
-                )
-              ) {
-                throw new Error(
-                  `Needed Label not included in this pull request`
-                )
+              const labelResult = this.isLabelsValid(
+                pr,
+                this.cfg.labels,
+                this.cfg.labelsStrategy,
+                'labels'
+              )
+              if (!labelResult.status) {
+                throw new Error(labelResult.message)
               }
-                core.debug(`Pull request has all need labels`)
+            }
 
-              if (
-                !pr.labels.every(
-                  label => !this.cfg.ignoreLabels.includes(label.name)
-                )
-              ) {
-                throw new Error(
-                  `This pull request contains labels that should be ignored, labels:${inspect(
-                    pr.labels.map(l => l.name)
-                  )}`
-                )
+            if (this.cfg.ignoreLabels.length > 0) {
+              const ignoreLabelResult = this.isLabelsValid(
+                pr,
+                this.cfg.labels,
+                this.cfg.labelsStrategy,
+                'ignoreLabels'
+              )
+              if (!ignoreLabelResult.status) {
+                throw new Error(ignoreLabelResult.message)
               }
-
-              core.debug(`Pull request doesn't have ignore labels`)
             }
 
             if (this.cfg.checkStatus) {
