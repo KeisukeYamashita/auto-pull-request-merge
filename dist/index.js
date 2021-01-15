@@ -192,6 +192,7 @@ class Merger {
                                 throw new Error(labelResult.message);
                             }
                             core.debug(`Checked labels and passed with message:${labelResult.message} with ${this.cfg.labelsStrategy}`);
+                            core.info(`Checked labels and passed with ignoreLabels:${util_1.inspect(this.cfg.labels)}`);
                         }
                         if (this.cfg.ignoreLabels.length) {
                             const ignoreLabelResult = this.isLabelsValid(pr, this.cfg.ignoreLabels, this.cfg.ignoreLabelsStrategy, 'ignoreLabels');
@@ -199,6 +200,7 @@ class Merger {
                                 throw new Error(ignoreLabelResult.message);
                             }
                             core.debug(`Checked ignore labels and passed with message:${ignoreLabelResult.message} with ${this.cfg.ignoreLabelsStrategy} strategy`);
+                            core.info(`Checked ignore labels and passed with ignoreLabels:${util_1.inspect(this.cfg.ignoreLabels)}`);
                         }
                         if (this.cfg.checkStatus) {
                             const { data: checks } = yield client.checks.listForRef({
@@ -241,6 +243,7 @@ class Merger {
                     core.setOutput('merged', true);
                 }
                 else {
+                    core.info(`dry run merge action`);
                     core.setOutput('merged', false);
                 }
             }

@@ -143,6 +143,11 @@ export class Merger {
               core.debug(
                 `Checked labels and passed with message:${labelResult.message} with ${this.cfg.labelsStrategy}`
               )
+              core.info(
+                `Checked labels and passed with ignoreLabels:${inspect(
+                  this.cfg.labels
+                )}`
+              )
             }
 
             if (this.cfg.ignoreLabels.length) {
@@ -158,6 +163,11 @@ export class Merger {
 
               core.debug(
                 `Checked ignore labels and passed with message:${ignoreLabelResult.message} with ${this.cfg.ignoreLabelsStrategy} strategy`
+              )
+              core.info(
+                `Checked ignore labels and passed with ignoreLabels:${inspect(
+                  this.cfg.ignoreLabels
+                )}`
               )
             }
 
@@ -214,6 +224,7 @@ export class Merger {
         })
         core.setOutput('merged', true)
       } else {
+        core.info(`dry run merge action`)
         core.setOutput('merged', false)
       }
     } catch (err) {
