@@ -62,7 +62,7 @@ export class Merger {
     }
 
     core.debug(
-      `checked all labels for type:${type} and prLabels:${inspect(
+      `Checked all labels for type:${type} and prLabels:${inspect(
         pr.labels.map(l => l.name)
       )}, hasLabels:${inspect(hasLabels)}, labels:${inspect(
         labels
@@ -99,7 +99,7 @@ export class Merger {
     }
 
     core.debug(
-      `checked all labels for type:${type} and prLabels:${inspect(
+      `Checked all labels for type:${type} and prLabels:${inspect(
         pr.labels.map(l => l.name)
       )}, hasLabels:${inspect(hasLabels)}, labels:${inspect(
         labels
