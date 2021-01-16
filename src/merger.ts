@@ -57,12 +57,12 @@ export class Merger {
     if (type === 'labels' && hasLabels.length === labels.length) {
       failed = false
     }
-    if (type === 'ignoreLabels' && hasLabels.length) {
+    if (type === 'ignoreLabels' && !hasLabels.length) {
       failed = false
     }
 
     core.debug(
-      `Checked all labels for type:${type} and prLabels:${inspect(
+      `Checking all labels for type:${type} and prLabels:${inspect(
         pr.labels.map(l => l.name)
       )}, hasLabels:${inspect(hasLabels)}, labels:${inspect(
         labels
@@ -94,12 +94,12 @@ export class Merger {
     if (type === 'labels' && hasLabels.length) {
       failed = false
     }
-    if (type === 'ignoreLabels' && hasLabels.length) {
+    if (type === 'ignoreLabels' && !hasLabels.length) {
       failed = false
     }
 
     core.debug(
-      `Checked atLeastOne labels for type:${type} and prLabels:${inspect(
+      `Checking atLeastOne labels for type:${type} and prLabels:${inspect(
         pr.labels.map(l => l.name)
       )}, hasLabels:${inspect(hasLabels)}, labels:${inspect(
         labels
@@ -160,7 +160,7 @@ export class Merger {
                 `Checked labels and passed with message:${labelResult.message} with ${this.cfg.labelsStrategy}`
               )
               core.info(
-                `Checked labels and passed with ignoreLabels:${inspect(
+                `Checked labels and passed with labels:${inspect(
                   this.cfg.labels
                 )}`
               )

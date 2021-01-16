@@ -139,10 +139,10 @@ class Merger {
         if (type === 'labels' && hasLabels.length === labels.length) {
             failed = false;
         }
-        if (type === 'ignoreLabels' && hasLabels.length) {
+        if (type === 'ignoreLabels' && !hasLabels.length) {
             failed = false;
         }
-        core.debug(`Checked all labels for type:${type} and prLabels:${util_1.inspect(pr.labels.map(l => l.name))}, hasLabels:${util_1.inspect(hasLabels)}, labels:${util_1.inspect(labels)} and failed: ${failed}`);
+        core.debug(`Checking all labels for type:${type} and prLabels:${util_1.inspect(pr.labels.map(l => l.name))}, hasLabels:${util_1.inspect(hasLabels)}, labels:${util_1.inspect(labels)} and failed: ${failed}`);
         return {
             failed,
             message: `PR ${pr.id} ${type === 'labels' ? '' : "does't"} contains all ${util_1.inspect(labels)} for PR labels ${util_1.inspect(pr.labels.map(l => l.name))} and and failed: ${failed}`
@@ -158,10 +158,10 @@ class Merger {
         if (type === 'labels' && hasLabels.length) {
             failed = false;
         }
-        if (type === 'ignoreLabels' && hasLabels.length) {
+        if (type === 'ignoreLabels' && !hasLabels.length) {
             failed = false;
         }
-        core.debug(`Checked atLeastOne labels for type:${type} and prLabels:${util_1.inspect(pr.labels.map(l => l.name))}, hasLabels:${util_1.inspect(hasLabels)}, labels:${util_1.inspect(labels)} and failed: ${failed}`);
+        core.debug(`Checking atLeastOne labels for type:${type} and prLabels:${util_1.inspect(pr.labels.map(l => l.name))}, hasLabels:${util_1.inspect(hasLabels)}, labels:${util_1.inspect(labels)} and failed: ${failed}`);
         return {
             failed,
             message: `PR ${pr.id} ${type === 'labels' ? '' : "does't"} contains ${util_1.inspect(labels)} for PR labels ${util_1.inspect(pr.labels.map(l => l.name))}`
@@ -194,7 +194,7 @@ class Merger {
                                 throw new Error(`Checked labels failed: ${labelResult.message}`);
                             }
                             core.debug(`Checked labels and passed with message:${labelResult.message} with ${this.cfg.labelsStrategy}`);
-                            core.info(`Checked labels and passed with ignoreLabels:${util_1.inspect(this.cfg.labels)}`);
+                            core.info(`Checked labels and passed with labels:${util_1.inspect(this.cfg.labels)}`);
                         }
                         if (this.cfg.ignoreLabels.length) {
                             const ignoreLabelResult = this.isLabelsValid(pr, this.cfg.ignoreLabels, this.cfg.ignoreLabelsStrategy, 'ignoreLabels');
