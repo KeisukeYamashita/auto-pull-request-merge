@@ -139,13 +139,13 @@ class Merger {
         if (type === 'labels' && hasLabels.length === labels.length) {
             failed = false;
         }
-        if (type === 'ignoreLabels' && !hasLabels.length) {
+        if (type === 'ignoreLabels' && hasLabels.length) {
             failed = false;
         }
         core.debug(`Checked all labels for type:${type} and prLabels:${util_1.inspect(pr.labels.map(l => l.name))}, hasLabels:${util_1.inspect(hasLabels)}, labels:${util_1.inspect(labels)} and failed: ${failed}`);
         return {
             failed,
-            message: `PR ${pr.id} ${type === 'labels' ? '' : "does't"} contains all ${util_1.inspect(labels)} for PR labels ${util_1.inspect(pr.labels.map(l => l.name))}`
+            message: `PR ${pr.id} ${type === 'labels' ? '' : "does't"} contains all ${util_1.inspect(labels)} for PR labels ${util_1.inspect(pr.labels.map(l => l.name))} and and failed: ${failed}`
         };
     }
     isAtLeastOneLabelsValid(pr, labels, type) {
@@ -161,7 +161,7 @@ class Merger {
         if (type === 'ignoreLabels' && hasLabels.length) {
             failed = false;
         }
-        core.debug(`Checked all labels for type:${type} and prLabels:${util_1.inspect(pr.labels.map(l => l.name))}, hasLabels:${util_1.inspect(hasLabels)}, labels:${util_1.inspect(labels)} and failed: ${failed}`);
+        core.debug(`Checked atLeastOne labels for type:${type} and prLabels:${util_1.inspect(pr.labels.map(l => l.name))}, hasLabels:${util_1.inspect(hasLabels)}, labels:${util_1.inspect(labels)} and failed: ${failed}`);
         return {
             failed,
             message: `PR ${pr.id} ${type === 'labels' ? '' : "does't"} contains ${util_1.inspect(labels)} for PR labels ${util_1.inspect(pr.labels.map(l => l.name))}`
