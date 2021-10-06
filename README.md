@@ -45,7 +45,7 @@ jobs:
 | `labels` | Label that the target pull request should have | - |
 | `labelsStrategy` | Check condition on how to check the labels (Options are `all`, `atLeastOne`). | `all` |
 | `intervalSeconds` | Seconds between the check | `0.1` | 
-| `repostiory` | The GitHub repository containing the pull request | Current repository | 
+| `repository` | The GitHub repository containing the pull request | Current repository | 
 | `pullRequestNumber` | The number of the pull request. | `github.event.pull_request.number` |
 | `sha` | SHA of the commit. | `github.event.pull_request.head.number` |
 | `strategy` | How to merge. `merge`, `squash` and `rebase` is supported. | `merge` | 
