@@ -28,7 +28,7 @@
     "@actions/github": "^4.0.0",
     "@octokit/types": "^5.5.0",
     "@octokit/webhooks": "^7.21.0",
-    "dayjs": "^1.10.3",
+    "dayjs": "^1.11.4",
     "node-notifier": ">=8.0.1"
   },
   "devDependencies": {
